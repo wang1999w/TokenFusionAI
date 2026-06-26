@@ -1,10 +1,15 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { GlobalJwtAuthGuard } from './common/guards/global-jwt-auth.guard';
 
+/**
+ * 应用启动入口
+ */
 async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
@@ -12,7 +17,7 @@ async function bootstrap(): Promise<void> {
   // 全局接口前缀
   app.setGlobalPrefix('api/v1');
 
-  // 全局校验管道
+  // 全局校验管道（自动校验 DTO，过滤非白名单字段）
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -20,6 +25,10 @@ async function bootstrap(): Promise<void> {
       forbidNonWhitelisted: true,
     }),
   );
+
+  // 全局 JWT 守卫（支持 @Public() 装饰器跳过鉴权）
+  const reflector = app.get(Reflector);
+  app.useGlobalGuards(new GlobalJwtAuthGuard(reflector));
 
   // 全局异常过滤器与拦截器
   app.useGlobalFilters(new AllExceptionsFilter());
