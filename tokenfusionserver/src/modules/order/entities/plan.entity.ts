@@ -1,4 +1,4 @@
-import {
+﻿import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -6,9 +6,8 @@ import {
 } from 'typeorm';
 
 /**
- * 套餐类型枚举
- * - one_time: 一次性付费（按次购买 Token）
- * - subscription: 订阅制（周期性扣费）
+ * 濂楅绫诲瀷鏋氫妇
+ * - one_time: 涓€娆℃€т粯璐癸紙鎸夋璐拱 Token锛? * - subscription: 璁㈤槄鍒讹紙鍛ㄦ湡鎬ф墸璐癸級
  */
 export enum PlanType {
   ONE_TIME = 'one_time',
@@ -16,9 +15,9 @@ export enum PlanType {
 }
 
 /**
- * 订阅周期枚举
- * - month: 月付
- * - year: 年付
+ * 璁㈤槄鍛ㄦ湡鏋氫妇
+ * - month: 鏈堜粯
+ * - year: 骞翠粯
  */
 export enum PlanInterval {
   MONTH = 'month',
@@ -26,64 +25,61 @@ export enum PlanInterval {
 }
 
 /**
- * 套餐配置实体
- * 定义可购买的 Token 套餐：免费、入门、专业、开发者等
- * 记录价格、Token 数量、计费方式及功能特性列表
- *
- * 注意：实体属性由 TypeORM 在运行时通过装饰器反射注入（如查询结果回填），
- * 因此使用 ! 定型断言声明"由框架赋值"，以兼容 strictPropertyInitialization。
- */
+ * 濂楅閰嶇疆瀹炰綋
+ * 瀹氫箟鍙喘涔扮殑 Token 濂楅锛氬厤璐广€佸叆闂ㄣ€佷笓涓氥€佸紑鍙戣€呯瓑
+ * 璁板綍浠锋牸銆乀oken 鏁伴噺銆佽璐规柟寮忓強鍔熻兘鐗规€у垪琛? *
+ * 娉ㄦ剰锛氬疄浣撳睘鎬х敱 TypeORM 鍦ㄨ繍琛屾椂閫氳繃瑁呴グ鍣ㄥ弽灏勬敞鍏ワ紙濡傛煡璇㈢粨鏋滃洖濉級锛? * 鍥犳浣跨敤 ! 瀹氬瀷鏂█澹版槑"鐢辨鏋惰祴鍊?锛屼互鍏煎 strictPropertyInitialization銆? */
 @Entity('plans')
 export class Plan {
-  /** 主键 ID */
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  /** 涓婚敭 ID */
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
-  /** 套餐唯一编码（free/starter/pro/developer），用于业务层引用 */
+  /** 濂楅鍞竴缂栫爜锛坒ree/starter/pro/developer锛夛紝鐢ㄤ簬涓氬姟灞傚紩鐢?*/
   @Column({ type: 'varchar', length: 32, unique: true })
   code!: string;
 
-  /** 套餐展示名称 */
+  /** 濂楅灞曠ず鍚嶇О */
   @Column({ type: 'varchar', length: 64 })
   name!: string;
 
-  /** 价格（单位：分），避免浮点精度问题，例如 499 = $4.99 */
+  /** 浠锋牸锛堝崟浣嶏細鍒嗭級锛岄伩鍏嶆诞鐐圭簿搴﹂棶棰橈紝渚嬪 499 = $4.99 */
   @Column({ name: 'price_cents', type: 'integer' })
   priceCents!: number;
 
-  /** 币种，ISO 4217 货币代码，默认 USD */
+  /** 甯佺锛孖SO 4217 璐у竵浠ｇ爜锛岄粯璁?USD */
   @Column({ type: 'varchar', length: 8, default: 'USD' })
   currency!: string;
 
-  /** 该套餐包含的 Token 数量（大整数，使用 bigint） */
-  @Column({ name: 'token_amount', type: 'bigint' })
+  /** 璇ュ椁愬寘鍚殑 Token 鏁伴噺锛堝ぇ鏁存暟锛屼娇鐢?bigint锛?*/
+  @Column({ name: 'token_amount', type: 'integer' })
   tokenAmount!: number;
 
-  /** 计费类型：one_time 一次性 / subscription 订阅 */
+  /** 璁¤垂绫诲瀷锛歰ne_time 涓€娆℃€?/ subscription 璁㈤槄 */
   @Column({ type: 'varchar', length: 16 })
   type!: PlanType;
 
-  /** 订阅周期：month / year；一次性套餐为 null */
+  /** 璁㈤槄鍛ㄦ湡锛歮onth / year锛涗竴娆℃€у椁愪负 null */
   @Column({ type: 'varchar', length: 16, nullable: true })
   interval!: PlanInterval | null;
 
-  /** 功能特性列表（JSON 数组），如 ["2000 tokens", "邮件支持"] */
-  @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
+  /** 鍔熻兘鐗规€у垪琛紙JSON 鏁扮粍锛夛紝濡?["2000 tokens", "閭欢鏀寔"] */
+  @Column({ type: 'simple-json', default: () => "'[]'" })
   features!: string[];
 
-  /** 是否标记为"推荐"套餐（前端高亮展示） */
+  /** 鏄惁鏍囪涓?鎺ㄨ崘"濂楅锛堝墠绔珮浜睍绀猴級 */
   @Column({ name: 'is_popular', type: 'boolean', default: false })
   isPopular!: boolean;
 
-  /** 排序权重，数值越小越靠前 */
+  /** 鎺掑簭鏉冮噸锛屾暟鍊艰秺灏忚秺闈犲墠 */
   @Column({ name: 'sort_order', type: 'integer', default: 0 })
   sortOrder!: number;
 
-  /** 是否启用（下架的套餐不会展示给用户） */
+  /** 鏄惁鍚敤锛堜笅鏋剁殑濂楅涓嶄細灞曠ず缁欑敤鎴凤級 */
   @Column({ type: 'boolean', default: true })
   enabled!: boolean;
 
-  /** 创建时间 */
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  /** 鍒涘缓鏃堕棿 */
+  @CreateDateColumn({ name: 'created_at',  })
   createdAt!: Date;
 }

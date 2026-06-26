@@ -17,97 +17,158 @@ import {
   Terminal,
   Gauge,
 } from 'lucide-react';
-import { Navbar } from '@/components/common/Navbar';
-import { Footer } from '@/components/common/Footer';
 import { ExperienceTabs } from '@/components/common/ExperienceTabs';
 import { cn } from '@/lib/utils/cn';
 
 /**
  * 主聚合落地页
  *
- * 8 个区域布局：
- * 1. Navbar 顶部导航
- * 2. Hero 英雄区（标题 + 副标题 + CTA + 信任徽章）
- * 3. Experience 体验区（内嵌 ExperienceTabs）
- * 4. Pricing 定价区
- * 5. Developers 开发者区
- * 6. Advantages 优势区（id=features）
- * 7. FAQ 常见问题区
- * 8. Footer 页脚
+ * 6 个区域布局（Navbar 和 Footer 由 (public)/layout.tsx 统一提供）：
+ * 1. Hero 英雄区（标题 + 副标题 + CTA + 信任徽章）
+ * 2. Experience 体验区（内嵌 ExperienceTabs）
+ * 3. Pricing 定价区
+ * 4. Developers 开发者区
+ * 5. Advantages 优势区（id=features）
+ * 6. FAQ 常见问题区
  */
 export default function HomePage() {
   const tExperience = useTranslations('experience');
 
   return (
-    <div className="min-h-screen bg-brand-background">
-      {/* 1. 顶部导航 */}
-      <Navbar />
+    <div className="relative min-h-screen">
+      {/* 全页科技网格底纹 */}
+      <div className="tech-grid-bg pointer-events-none fixed inset-0 z-0" />
 
-      {/* 2. Hero 英雄区 */}
+      {/* 1. Hero 英雄区 */}
       <HeroSection />
 
-      {/* 3. 体验区 */}
-      <section id="experience" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center">
-          <h2 className="mb-3 text-3xl font-bold text-white md:text-4xl">
-            <span className="text-brand-gradient">{tExperience('title')}</span>
-          </h2>
-          <p className="mx-auto max-w-2xl text-text-secondary">
-            {tExperience('subtitle')}
-          </p>
+      {/* 2. 体验区（动态背景 + 玻璃态面板） */}
+      <section id="experience" className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+        {/* 体验区动态背景 */}
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-20"
+            style={{ backgroundImage: 'url(/images/demo-showcase.jpg)' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-background via-brand-background/80 to-brand-background" />
+          <div className="absolute left-1/2 top-0 h-[300px] w-[800px] -translate-x-1/2 rounded-full bg-brand-primary/8 blur-[120px]" />
         </div>
-        <ExperienceTabs />
+
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center">
+            <h2 className="mb-3 text-3xl font-bold text-white md:text-4xl">
+              <span className="animate-gradient-shine bg-gradient-to-r from-brand-primary via-[#3B82F6] to-brand-primary bg-clip-text text-transparent">
+                {tExperience('title')}
+              </span>
+            </h2>
+            <p className="mx-auto max-w-2xl text-text-secondary">
+              {tExperience('subtitle')}
+            </p>
+          </div>
+          <ExperienceTabs />
+        </div>
       </section>
 
-      {/* 4. 定价区 */}
+      {/* 3. 定价区 */}
       <PricingSection />
 
-      {/* 5. 开发者区 */}
+      {/* 4. 开发者区 */}
       <DevelopersSection />
 
-      {/* 6. 优势区 */}
+      {/* 5. 优势区 */}
       <AdvantagesSection />
 
-      {/* 7. FAQ 区 */}
+      {/* 6. FAQ 区 */}
       <FaqSection />
-
-      {/* 8. 页脚 */}
-      <Footer />
     </div>
   );
 }
 
 /* ============================================================
- * Hero 英雄区
+ * Hero 英雄区（全屏动态背景 + 粒子动画）
  * ============================================================ */
+
+/** 漂浮粒子配置 */
+const HERO_PARTICLES = [
+  { left: '10%', top: '20%', size: 4, delay: '0s', duration: '8s' },
+  { left: '85%', top: '15%', size: 6, delay: '1s', duration: '10s' },
+  { left: '70%', top: '60%', size: 3, delay: '2s', duration: '7s' },
+  { left: '25%', top: '70%', size: 5, delay: '3s', duration: '9s' },
+  { left: '50%', top: '30%', size: 3, delay: '0.5s', duration: '8s' },
+  { left: '90%', top: '50%', size: 4, delay: '2.5s', duration: '10s' },
+  { left: '15%', top: '50%', size: 5, delay: '1.5s', duration: '9s' },
+  { left: '60%', top: '80%', size: 3, delay: '3.5s', duration: '7s' },
+];
 
 function HeroSection() {
   const t = useTranslations('hero');
   const tCommon = useTranslations('common');
 
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-20 sm:px-6 lg:px-8 lg:pt-28">
-      {/* 背景光晕 */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-brand-primary/10 blur-[120px]" />
-        <div className="absolute right-1/4 top-1/3 h-[300px] w-[300px] rounded-full bg-[#3B82F6]/10 blur-[100px]" />
+    <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+      {/* 层 1: AI 生成的全屏背景图（缓慢缩放流动，模拟视频循环） */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="animate-hero-bg absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/images/hero-bg.jpg)' }}
+        />
+        {/* 底色叠加，确保文字可读性 */}
+        <div className="absolute inset-0 bg-brand-background/60" />
+        {/* 底部渐变过渡到页面背景 */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-brand-background" />
       </div>
 
-      <div className="mx-auto max-w-4xl text-center">
+      {/* 层 2: 科技网格 */}
+      <div className="tech-grid-bg animate-grid-pulse pointer-events-none absolute inset-0" />
+
+      {/* 层 3: 光晕脉动 */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="animate-glow-pulse absolute left-1/2 top-1/4 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-brand-primary/10 blur-[140px]" />
+        <div className="animate-glow-pulse delay-2 absolute right-1/4 top-1/2 h-[350px] w-[350px] rounded-full bg-[#3B82F6]/12 blur-[110px]" />
+        <div className="animate-glow-pulse delay-4 absolute left-1/4 bottom-1/4 h-[300px] w-[400px] rounded-full bg-[#06B6D4]/8 blur-[100px]" />
+      </div>
+
+      {/* 层 4: 漂浮粒子 */}
+      <div className="pointer-events-none absolute inset-0">
+        {HERO_PARTICLES.map((p, i) => (
+          <div
+            key={i}
+            className="animate-particle absolute rounded-full bg-brand-primary/40"
+            style={{
+              left: p.left,
+              top: p.top,
+              width: p.size,
+              height: p.size,
+              animationDelay: p.delay,
+              animationDuration: p.duration,
+              boxShadow: '0 0 8px rgba(6, 182, 212, 0.6)',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* 层 5: 扫描光线（极淡） */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="animate-scan-line gradient-beam absolute inset-x-0 h-px" />
+      </div>
+
+      {/* 内容区 */}
+      <div className="relative z-10 mx-auto max-w-4xl text-center">
         {/* 信任徽章 */}
         <div className="mb-8 flex flex-wrap items-center justify-center gap-3">
           {[t('badge1'), t('badge2'), t('badge3')].map((badge, i) => (
             <span
               key={i}
-              className="rounded-full border border-brand-primary/20 bg-brand-primary/10 px-4 py-1.5 text-sm font-medium text-brand-primary"
+              className="animate-float rounded-full border border-brand-primary/30 bg-brand-primary/10 px-4 py-1.5 text-sm font-medium text-brand-primary backdrop-blur-sm"
+              style={{ animationDelay: `${i * 0.5}s` }}
             >
               {badge}
             </span>
           ))}
         </div>
 
-        {/* 标题 */}
-        <h1 className="mb-6 text-4xl font-bold leading-tight text-white md:text-6xl">
+        {/* 标题（渐变闪烁） */}
+        <h1 className="animate-gradient-shine mb-6 bg-gradient-to-r from-white via-brand-primary to-white bg-clip-text text-4xl font-bold leading-tight text-transparent md:text-6xl">
           {t('title')}
         </h1>
 
@@ -120,14 +181,14 @@ function HeroSection() {
         <div className="mb-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/auth/register"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-gradient px-8 py-3.5 text-base font-medium text-white shadow-lg shadow-brand-primary/20 transition-transform hover:scale-[1.02] sm:w-auto"
+            className="glow-border flex w-full items-center justify-center gap-2 rounded-xl bg-brand-gradient px-8 py-3.5 text-base font-medium text-white transition-transform hover:scale-[1.02] sm:w-auto"
           >
             <Sparkles className="h-5 w-5" />
             {t('cta')}
           </Link>
           <Link
             href="#pricing"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-8 py-3.5 text-base font-medium text-white transition-colors hover:bg-white/5 sm:w-auto"
+            className="glass-card flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-8 py-3.5 text-base font-medium text-white transition-colors hover:bg-white/5 sm:w-auto"
           >
             {tCommon('viewPricing')}
             <ArrowRight className="h-4 w-4" />
@@ -157,7 +218,13 @@ function PricingSection() {
   const t = useTranslations('pricing');
 
   return (
-    <section id="pricing" className="px-4 py-20 sm:px-6 lg:px-8">
+    <section id="pricing" className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+      {/* 定价区背景光效 */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-0 top-1/2 h-[400px] w-[400px] rounded-full bg-[#3B82F6]/6 blur-[120px]" />
+        <div className="absolute right-0 top-1/3 h-[300px] w-[300px] rounded-full bg-brand-primary/6 blur-[100px]" />
+      </div>
+
       <div className="mx-auto max-w-7xl">
         {/* 标题 */}
         <div className="mb-12 text-center">
@@ -170,10 +237,10 @@ function PricingSection() {
             <div
               key={plan.id}
               className={cn(
-                'relative flex flex-col rounded-2xl border bg-brand-card p-6 transition-all',
+                'glass-card relative flex flex-col rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1',
                 plan.popular
-                  ? 'border-brand-primary shadow-lg shadow-brand-primary/10'
-                  : 'border-white/5 hover:border-white/10',
+                  ? 'glow-border border-brand-primary/40'
+                  : 'hover:border-white/20',
               )}
             >
               {/* 最受欢迎标签 */}
@@ -241,7 +308,13 @@ function DevelopersSection() {
   ] as const;
 
   return (
-    <section id="developers" className="px-4 py-20 sm:px-6 lg:px-8">
+    <section id="developers" className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+      {/* 开发者区背景光效 */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute right-1/4 top-0 h-[350px] w-[500px] rounded-full bg-[#3B82F6]/5 blur-[120px]" />
+        <div className="absolute left-1/4 bottom-0 h-[250px] w-[350px] rounded-full bg-brand-primary/5 blur-[100px]" />
+      </div>
+
       <div className="mx-auto max-w-7xl">
         {/* 标题 */}
         <div className="mb-12 text-center">
@@ -256,7 +329,7 @@ function DevelopersSection() {
             return (
               <div
                 key={feat.titleKey}
-                className="rounded-2xl border border-white/5 bg-brand-card p-6 transition-colors hover:border-white/10"
+                className="glass-card group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/20"
               >
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-primary/10">
                   <Icon className="h-5 w-5 text-brand-primary" />
@@ -303,7 +376,13 @@ function AdvantagesSection() {
   ] as const;
 
   return (
-    <section id="features" className="px-4 py-20 sm:px-6 lg:px-8">
+    <section id="features" className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+      {/* 优势区背景光效 */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/2 top-0 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-brand-primary/6 blur-[130px]" />
+        <div className="absolute left-1/4 bottom-1/4 h-[250px] w-[350px] rounded-full bg-[#3B82F6]/5 blur-[100px]" />
+      </div>
+
       <div className="mx-auto max-w-7xl">
         {/* 标题 */}
         <div className="mb-12 text-center">
@@ -318,7 +397,7 @@ function AdvantagesSection() {
             return (
               <div
                 key={item.titleKey}
-                className="group rounded-2xl border border-white/5 bg-brand-card p-6 transition-all hover:-translate-y-1 hover:border-white/10"
+                className="glass-card group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/20"
               >
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient transition-transform group-hover:scale-110">
                   <Icon className="h-6 w-6 text-white" />
@@ -355,7 +434,12 @@ function FaqSection() {
   ] as const;
 
   return (
-    <section id="faq" className="px-4 py-20 sm:px-6 lg:px-8">
+    <section id="faq" className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+      {/* FAQ 区背景光效 */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/2 top-1/3 h-[300px] w-[500px] -translate-x-1/2 rounded-full bg-brand-primary/5 blur-[120px]" />
+      </div>
+
       <div className="mx-auto max-w-3xl">
         {/* 标题 */}
         <div className="mb-12 text-center">
@@ -369,7 +453,10 @@ function FaqSection() {
             return (
               <div
                 key={faq.qKey}
-                className="overflow-hidden rounded-xl border border-white/5 bg-brand-card"
+                className={cn(
+                  'glass-card overflow-hidden rounded-xl transition-all duration-300',
+                  isOpen && 'glow-border border-brand-primary/30',
+                )}
               >
                 {/* 问题（可点击展开） */}
                 <button

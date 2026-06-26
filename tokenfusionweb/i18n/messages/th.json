@@ -335,6 +335,26 @@
       "featureUsageHint": "การกระจายการเรียก API ตามฟีเจอร์",
       "calls": "ครั้ง"
     },
+    "settings": {
+      "title": "การตั้งค่าระบบ",
+      "subtitle": "จัดการการกำหนดค่าแพลตฟอร์มและตัวเลือกความปลอดภัย",
+      "general": "ทั่วไป",
+      "payment": "การชำระเงิน",
+      "notifications": "การแจ้งเตือน",
+      "security": "ความปลอดภัย",
+      "siteName": "ชื่อเว็บไซต์",
+      "defaultLanguage": "ภาษาเริ่มต้น",
+      "timezone": "เขตเวลา",
+      "supportedMethods": "วิธีการชำระเงินที่รองรับ",
+      "defaultCurrency": "สกุลเงินเริ่มต้น",
+      "emailNotification": "การแจ้งเตือนทางอีเมล",
+      "orderAlert": "การแจ้งเตือนคำสั่งซื้อ",
+      "ipWhitelist": "รายการ IP ที่อนุญาต",
+      "twoFactor": "การยืนยันตัวตนสองขั้นตอน",
+      "enabled": "เปิดใช้งาน",
+      "disabled": "ปิดใช้งาน",
+      "notConfigured": "ยังไม่ได้กำหนดค่า"
+    },
     "errors": {
       "fetchFailed": "โหลดข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง",
       "actionFailed": "การดำเนินการล้มเหลว กรุณาลองอีกครั้ง",

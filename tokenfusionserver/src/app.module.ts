@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { envConfig } from './config/env.config';
 import { databaseConfig } from './config/database.config';
+import { AppController } from './app.controller';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BillingModule } from './modules/billing/billing.module';
@@ -35,5 +36,6 @@ import { AdminModule } from './modules/admin/admin.module';
     // 管理后台模块（Phase 7）：用户/订单管理、数据看板
     AdminModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

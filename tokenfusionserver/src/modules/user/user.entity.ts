@@ -1,4 +1,4 @@
-import {
+﻿import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -13,7 +13,7 @@ import { TokenAccount } from '../billing/entities/token-account.entity';
 import { RefreshToken } from '../auth/entities/refresh-token.entity';
 
 /**
- * 用户角色枚举
+ * 鐢ㄦ埛瑙掕壊鏋氫妇
  */
 export enum UserRole {
   GUEST = 'guest',
@@ -24,8 +24,7 @@ export enum UserRole {
 }
 
 /**
- * 用户状态枚举
- */
+ * 鐢ㄦ埛鐘舵€佹灇涓? */
 export enum UserStatus {
   ACTIVE = 1,
   BANNED = 0,
@@ -33,15 +32,15 @@ export enum UserStatus {
 }
 
 /**
- * 用户主表实体
- * 存储用户基本信息、角色、邀请关系等
+ * 鐢ㄦ埛涓昏〃瀹炰綋
+ * 瀛樺偍鐢ㄦ埛鍩烘湰淇℃伅銆佽鑹层€侀個璇峰叧绯荤瓑
  */
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
-  @Column({ type: 'uuid', unique: true, default: () => 'gen_random_uuid()' })
+  @Column({ type: 'varchar', unique: true, default: () => "(lower(hex(randomblob(16))))" })
   uuid!: string;
 
   @Index()
@@ -70,25 +69,25 @@ export class User {
   @Column({ name: 'invite_code', type: 'varchar', length: 16, unique: true })
   inviteCode!: string;
 
-  @Column({ name: 'inviter_id', type: 'bigint', nullable: true })
+  @Column({ name: 'inviter_id', type: 'integer', nullable: true })
   inviterId!: number | null;
 
-  @Column({ name: 'last_login_at', type: 'timestamptz', nullable: true })
+  @Column({ type: 'datetime', name: 'last_login_at', nullable: true })
   lastLoginAt!: Date | null;
 
-  @Column({ name: 'last_login_ip', type: 'inet', nullable: true })
+  @Column({ name: 'last_login_ip', type: 'varchar', nullable: true })
   lastLoginIp!: string | null;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({ name: 'created_at',  })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  @UpdateDateColumn({ name: 'updated_at',  })
   updatedAt!: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt!: Date | null;
 
-  // 关联关系
+  // 鍏宠仈鍏崇郴
   @OneToOne(() => TokenAccount, (account) => account.user)
   tokenAccount!: TokenAccount;
 

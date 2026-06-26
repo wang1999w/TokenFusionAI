@@ -335,6 +335,26 @@
       "featureUsageHint": "Pengagihan panggilan API mengikut ciri",
       "calls": "panggilan"
     },
+    "settings": {
+      "title": "Tetapan Sistem",
+      "subtitle": "Urus konfigurasi platform dan pilihan keselamatan",
+      "general": "Umum",
+      "payment": "Pembayaran",
+      "notifications": "Pemberitahuan",
+      "security": "Keselamatan",
+      "siteName": "Nama Laman",
+      "defaultLanguage": "Bahasa Lalai",
+      "timezone": "Zon Masa",
+      "supportedMethods": "Kaedah Pembayaran yang Disokong",
+      "defaultCurrency": "Mata Wang Lalai",
+      "emailNotification": "Pemberitahuan E-mel",
+      "orderAlert": "Amaran Pesanan",
+      "ipWhitelist": "Senarai IP yang Dibenarkan",
+      "twoFactor": "Pengesahan Dua Faktor",
+      "enabled": "Dibolehkan",
+      "disabled": "Dilumpuhkan",
+      "notConfigured": "Belum Dikonfigurasi"
+    },
     "errors": {
       "fetchFailed": "Gagal memuatkan data. Sila cuba lagi.",
       "actionFailed": "Tindakan gagal. Sila cuba lagi.",

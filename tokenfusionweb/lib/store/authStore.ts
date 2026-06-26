@@ -26,14 +26,35 @@ interface AuthState {
 /**
  * 从 localStorage 加载已存储的认证信息
  * 用于页面刷新后恢复登录状态
+ *
+ * 注意：localStorage 中可能存在无效值（如字面字符串 "undefined"、被截断的 JSON），
+ * 直接 JSON.parse 会抛出 SyntaxError 导致整个 DashboardLayout 崩溃，
+ * 因此必须用 try-catch 包裹并清理脏数据。
  */
 function loadStoredAuth(): { user: User | null; accessToken: string | null } {
   if (typeof window === 'undefined') {
     return { user: null, accessToken: null };
   }
   const storedToken = localStorage.getItem('access_token');
-  const storedUser = localStorage.getItem('user');
-  const user = storedUser ? (JSON.parse(storedUser) as User) : null;
+  const rawUser = localStorage.getItem('user');
+
+  // 若 token 与用户信息都不存在，视为未登录
+  if (!storedToken || !rawUser) {
+    return { user: null, accessToken: storedToken };
+  }
+
+  // 安全解析用户信息，兼容脏数据（"undefined" / "null" / 损坏 JSON）
+  let user: User | null = null;
+  try {
+    // 排除字面 "undefined" / "null" 字符串，避免 JSON.parse 抛错
+    if (rawUser !== 'undefined' && rawUser !== 'null') {
+      user = JSON.parse(rawUser) as User;
+    }
+  } catch {
+    // 解析失败时清理脏数据，避免后续重复报错
+    localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+  }
   return { user, accessToken: storedToken };
 }
 

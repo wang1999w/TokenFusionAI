@@ -1,4 +1,4 @@
-import {
+﻿import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -7,11 +7,11 @@ import {
 } from 'typeorm';
 
 /**
- * 生成类型枚举
- * - chat   对话生成
- * - image  图像生成
- * - video  视频生成
- * - code   代码生成
+ * 鐢熸垚绫诲瀷鏋氫妇
+ * - chat   瀵硅瘽鐢熸垚
+ * - image  鍥惧儚鐢熸垚
+ * - video  瑙嗛鐢熸垚
+ * - code   浠ｇ爜鐢熸垚
  */
 export enum GenerationType {
   CHAT = 'chat',
@@ -21,11 +21,9 @@ export enum GenerationType {
 }
 
 /**
- * 生成状态枚举
- * - pending  待处理（已创建任务，尚未开始执行）
- * - running  执行中
- * - success  成功
- * - failed   失败
+ * 鐢熸垚鐘舵€佹灇涓? * - pending  寰呭鐞嗭紙宸插垱寤轰换鍔★紝灏氭湭寮€濮嬫墽琛岋級
+ * - running  鎵ц涓? * - success  鎴愬姛
+ * - failed   澶辫触
  */
 export enum GenerationStatus {
   PENDING = 'pending',
@@ -35,101 +33,87 @@ export enum GenerationStatus {
 }
 
 /**
- * 生成历史实体
+ * 鐢熸垚鍘嗗彶瀹炰綋
  *
- * 记录每一次 AI 生成调用的完整上下文与结果，供：
- * 1) 用户在「历史记录」页查看自己的生成历史；
- * 2) 平台统计各功能（chat/image/video/code）调用量与 Token 消耗；
- * 3) 邀请场景下按 invite_code 归属匿名 / 未登录用户。
- *
- * 字段说明：
- * - user_id      可空，匿名 / 设备用户调用时为 NULL；
- * - device_id    设备标识，用于匿名用户的记录归属；
- * - params       生成参数（如 temperature、size、steps 等），JSON；
- * - result       生成结果（如文本内容、图片 URL、视频 URL 等），JSON；
- * - token_cost   本次消耗 Token 数量；
- * - duration_ms  执行耗时（毫秒）；
- * - is_public    是否公开（公开内容可在广场 / 社区展示）；
- * - invite_code  邀请码，用于邀请关系下匿名记录的归属与奖励统计。
- *
- * 索引：
- * 1) (user_id, created_at) —— 用户历史分页（按时间倒序）
- * 2) (device_id, created_at) —— 设备历史分页
- * 3) (type, created_at) —— 按类型统计与检索
- *
- * 注意：实体属性由 TypeORM 在运行时通过装饰器反射注入（如查询结果回填），
- * 因此使用 ! 定型断言声明"由框架赋值"，以兼容 strictPropertyInitialization。
- */
+ * 璁板綍姣忎竴娆?AI 鐢熸垚璋冪敤鐨勫畬鏁翠笂涓嬫枃涓庣粨鏋滐紝渚涳細
+ * 1) 鐢ㄦ埛鍦ㄣ€屽巻鍙茶褰曘€嶉〉鏌ョ湅鑷繁鐨勭敓鎴愬巻鍙诧紱
+ * 2) 骞冲彴缁熻鍚勫姛鑳斤紙chat/image/video/code锛夎皟鐢ㄩ噺涓?Token 娑堣€楋紱
+ * 3) 閭€璇峰満鏅笅鎸?invite_code 褰掑睘鍖垮悕 / 鏈櫥褰曠敤鎴枫€? *
+ * 瀛楁璇存槑锛? * - user_id      鍙┖锛屽尶鍚?/ 璁惧鐢ㄦ埛璋冪敤鏃朵负 NULL锛? * - device_id    璁惧鏍囪瘑锛岀敤浜庡尶鍚嶇敤鎴风殑璁板綍褰掑睘锛? * - params       鐢熸垚鍙傛暟锛堝 temperature銆乻ize銆乻teps 绛夛級锛孞SON锛? * - result       鐢熸垚缁撴灉锛堝鏂囨湰鍐呭銆佸浘鐗?URL銆佽棰?URL 绛夛級锛孞SON锛? * - token_cost   鏈娑堣€?Token 鏁伴噺锛? * - duration_ms  鎵ц鑰楁椂锛堟绉掞級锛? * - is_public    鏄惁鍏紑锛堝叕寮€鍐呭鍙湪骞垮満 / 绀惧尯灞曠ず锛夛紱
+ * - invite_code  閭€璇风爜锛岀敤浜庨個璇峰叧绯讳笅鍖垮悕璁板綍鐨勫綊灞炰笌濂栧姳缁熻銆? *
+ * 绱㈠紩锛? * 1) (user_id, created_at) 鈥斺€?鐢ㄦ埛鍘嗗彶鍒嗛〉锛堟寜鏃堕棿鍊掑簭锛? * 2) (device_id, created_at) 鈥斺€?璁惧鍘嗗彶鍒嗛〉
+ * 3) (type, created_at) 鈥斺€?鎸夌被鍨嬬粺璁′笌妫€绱? *
+ * 娉ㄦ剰锛氬疄浣撳睘鎬х敱 TypeORM 鍦ㄨ繍琛屾椂閫氳繃瑁呴グ鍣ㄥ弽灏勬敞鍏ワ紙濡傛煡璇㈢粨鏋滃洖濉級锛? * 鍥犳浣跨敤 ! 瀹氬瀷鏂█澹版槑"鐢辨鏋惰祴鍊?锛屼互鍏煎 strictPropertyInitialization銆? */
 @Entity('generation_history')
 @Index('idx_generation_user_created', ['userId', 'createdAt'])
 @Index('idx_generation_device_created', ['deviceId', 'createdAt'])
 @Index('idx_generation_type_created', ['type', 'createdAt'])
 export class GenerationHistory {
-  /** 主键 ID */
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  /** 涓婚敭 ID */
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
-  /** 用户 ID（匿名 / 设备用户调用时为 NULL） */
-  @Column({ name: 'user_id', type: 'bigint', nullable: true })
+  /** 鐢ㄦ埛 ID锛堝尶鍚?/ 璁惧鐢ㄦ埛璋冪敤鏃朵负 NULL锛?*/
+  @Column({ name: 'user_id', type: 'integer', nullable: true })
   userId!: number | null;
 
-  /** 设备标识（匿名用户归属） */
+  /** 璁惧鏍囪瘑锛堝尶鍚嶇敤鎴峰綊灞烇級 */
   @Column({ name: 'device_id', type: 'varchar', length: 128 })
   deviceId!: string;
 
-  /** 生成类型：chat / image / video / code */
+  /** 鐢熸垚绫诲瀷锛歝hat / image / video / code */
   @Column({ type: 'varchar', length: 16 })
   type!: GenerationType;
 
-  /** 服务提供方（如 openai / stability / runway 等） */
+  /** 鏈嶅姟鎻愪緵鏂癸紙濡?openai / stability / runway 绛夛級 */
   @Column({ type: 'varchar', length: 32 })
   provider!: string;
 
-  /** 模型标识（如 gpt-4o / sd-xl 等） */
+  /** 妯″瀷鏍囪瘑锛堝 gpt-4o / sd-xl 绛夛級 */
   @Column({ type: 'varchar', length: 64 })
   model!: string;
 
-  /** 用户输入的提示词 */
+  /** 鐢ㄦ埛杈撳叆鐨勬彁绀鸿瘝 */
   @Column({ type: 'text' })
   prompt!: string;
 
-  /** 反向提示词（图像 / 视频生成用，可空） */
+  /** 鍙嶅悜鎻愮ず璇嶏紙鍥惧儚 / 瑙嗛鐢熸垚鐢紝鍙┖锛?*/
   @Column({ name: 'negative_prompt', type: 'text', nullable: true })
   negativePrompt!: string | null;
 
-  /** 生成参数（JSON，如 temperature / size / steps） */
-  @Column({ type: 'jsonb', default: () => "'{}'::jsonb" })
+  /** 鐢熸垚鍙傛暟锛圝SON锛屽 temperature / size / steps锛?*/
+  @Column({ type: 'simple-json', default: () => "'{}'" })
   params!: Record<string, any>;
 
-  /** 生成结果（JSON，如文本 / 图片 URL / 视频 URL） */
-  @Column({ type: 'jsonb', default: () => "'{}'::jsonb" })
+  /** 鐢熸垚缁撴灉锛圝SON锛屽鏂囨湰 / 鍥剧墖 URL / 瑙嗛 URL锛?*/
+  @Column({ type: 'simple-json', default: () => "'{}'" })
   result!: Record<string, any>;
 
-  /** 本次消耗 Token 数量 */
-  @Column({ name: 'token_cost', type: 'bigint', default: 0 })
+  /** 鏈娑堣€?Token 鏁伴噺 */
+  @Column({ name: 'token_cost', type: 'integer', default: 0 })
   tokenCost!: number;
 
-  /** 执行耗时（毫秒） */
+  /** 鎵ц鑰楁椂锛堟绉掞級 */
   @Column({ name: 'duration_ms', type: 'integer', default: 0 })
   durationMs!: number;
 
-  /** 状态：pending / running / success / failed */
+  /** 鐘舵€侊細pending / running / success / failed */
   @Column({ type: 'varchar', length: 16, default: GenerationStatus.PENDING })
   status!: GenerationStatus;
 
-  /** 失败原因（status=failed 时填充） */
+  /** 澶辫触鍘熷洜锛坰tatus=failed 鏃跺～鍏咃級 */
   @Column({ name: 'error_msg', type: 'text', nullable: true })
   errorMsg!: string | null;
 
-  /** 是否公开（公开内容可在广场展示） */
+  /** 鏄惁鍏紑锛堝叕寮€鍐呭鍙湪骞垮満灞曠ず锛?*/
   @Column({ name: 'is_public', type: 'boolean', default: false })
   isPublic!: boolean;
 
-  /** 邀请码（用于邀请关系下匿名记录的归属与奖励统计） */
+  /** 閭€璇风爜锛堢敤浜庨個璇峰叧绯讳笅鍖垮悕璁板綍鐨勫綊灞炰笌濂栧姳缁熻锛?*/
   @Column({ name: 'invite_code', type: 'varchar', length: 16, nullable: true })
   inviteCode!: string | null;
 
-  /** 创建时间 */
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  /** 鍒涘缓鏃堕棿 */
+  @CreateDateColumn({ name: 'created_at',  })
   createdAt!: Date;
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import { Menu, X, Sparkles } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { cn } from '@/lib/utils/cn';
@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils/cn';
  *
  * 职责：
  * - Logo（点击回首页）
- * - 导航链接（锚点跳转至落地页各区域）
+ * - 导航链接（跳转至独立页面）
  * - 语言切换（复用 LanguageSwitcher）
  * - 登录 / 注册按钮
  * - 移动端汉堡菜单
@@ -21,13 +21,11 @@ import { cn } from '@/lib/utils/cn';
 export function Navbar() {
   const t = useTranslations('nav');
   const tCommon = useTranslations('common');
+  const pathname = usePathname();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  /**
-   * 监听滚动，切换导航栏背景
-   */
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     handleScroll();
@@ -35,13 +33,38 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  /** 导航锚点配置 */
+  /**
+   * 导航链接配置
+   * - Features：首页锚点滚动（无独立页面）
+   * - Pricing：独立定价页
+   * - API：独立 API 文档页
+   * - FAQ：独立 FAQ 页
+   */
   const navLinks = [
-    { href: '#features', label: t('features') },
-    { href: '#pricing', label: t('pricing') },
-    { href: '#developers', label: t('api') },
-    { href: '#faq', label: t('faq') },
+    { href: '/#features', label: t('features'), isAnchor: true },
+    { href: '/pricing', label: t('pricing'), isAnchor: false },
+    { href: '/apidocs', label: t('api'), isAnchor: false },
+    { href: '/faq', label: t('faq'), isAnchor: false },
   ];
+
+  /**
+   * 处理导航点击
+   * - 锚点链接：如果当前在首页，直接滚动；否则先跳转首页再滚动
+   * - 路由链接：使用 next-intl Link 自动处理
+   */
+  function handleAnchorClick(href: string, e: React.MouseEvent) {
+    const isOnHomepage = pathname === '/';
+    if (isOnHomepage) {
+      e.preventDefault();
+      const targetId = href.split('#')[1];
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+      setMobileOpen(false);
+    }
+    // 如果不在首页，让 Link 正常跳转到 /#features，页面加载后浏览器自动滚动到锚点
+  }
 
   return (
     <header
@@ -64,13 +87,18 @@ export function Navbar() {
         {/* 中间：桌面端导航链接 */}
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
+              onClick={
+                link.isAnchor
+                  ? (e) => handleAnchorClick(link.href, e)
+                  : () => setMobileOpen(false)
+              }
               className="text-sm text-text-secondary transition-colors hover:text-white"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -107,14 +135,18 @@ export function Navbar() {
         <div className="border-t border-white/5 bg-brand-background/95 backdrop-blur-lg md:hidden">
           <div className="space-y-1 px-4 py-3">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={
+                  link.isAnchor
+                    ? (e) => handleAnchorClick(link.href, e)
+                    : () => setMobileOpen(false)
+                }
                 className="block rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-white"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <div className="flex items-center gap-3 pt-2">
               <LanguageSwitcher />

@@ -8,7 +8,9 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { DeviceBind } from './entities/device-bind.entity';
+import { User } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
+import { BillingModule } from '../billing/billing.module';
 import { EmailService } from '../../common/utils/email.util';
 
 /**
@@ -17,7 +19,7 @@ import { EmailService } from '../../common/utils/email.util';
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([RefreshToken, DeviceBind]),
+    TypeOrmModule.forFeature([RefreshToken, DeviceBind, User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -30,6 +32,7 @@ import { EmailService } from '../../common/utils/email.util';
       }),
     }),
     UserModule,
+    BillingModule,
     ConfigModule,
   ],
   providers: [AuthService, JwtStrategy, EmailService],

@@ -6,10 +6,12 @@ import {
   HttpStatus,
   Req,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
+import { BillingService } from '../billing/billing.service';
 import { RegisterDto } from '../user/dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -29,9 +31,12 @@ import { JwtPayload } from './interfaces/jwt-payload.interface';
  */
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
+    private readonly billingService: BillingService,
   ) {}
 
   /**
@@ -44,8 +49,20 @@ export class AuthController {
   async register(@Body() dto: RegisterDto) {
     const user = await this.userService.register(dto);
 
-    // 注册成功后自动发送验证码
-    await this.authService.sendVerificationCode(user.email);
+    // 注册成功后自动创建 Token 账户（赠送初始额度可在此扩展）
+    try {
+      await this.billingService.createAccount(user.id);
+      this.logger.log(`Token 账户已创建：用户 ID ${user.id}`);
+    } catch (err) {
+      this.logger.warn(`Token 账户创建失败（可能已存在）：用户 ID ${user.id}`);
+    }
+
+    // 注册成功后自动发送验证码（SMTP 不可用时降级，不阻断注册流程）
+    try {
+      await this.authService.sendVerificationCode(user.email);
+    } catch (err) {
+      // 邮件发送失败不阻断注册，用户可稍后重新请求验证码
+    }
 
     return {
       message: '注册成功，请查收邮箱完成验证',

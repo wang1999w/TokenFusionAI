@@ -71,16 +71,16 @@ export default function DashboardLayout({
   /** 控制台二级导航项 */
   const navItems = [
     { href: '/dashboard', label: t('dashboard') },
-    { href: '/dashboard/history', label: t('history') },
-    { href: '/dashboard/apikeys', label: t('apiKeys') },
-    { href: '/dashboard/billing', label: t('billing') },
+    { href: '/history', label: t('history') },
+    { href: '/apikeys', label: t('apiKeys') },
+    { href: '/billing', label: t('billing') },
   ] as const;
 
   /** 判断当前导航项是否激活 */
   const isActive = (href: string): boolean =>
     href === '/dashboard'
       ? pathname === '/dashboard'
-      : pathname === href || pathname.startsWith(`${href}/`);
+      : pathname === href;
 
   return (
     <div className="min-h-screen bg-brand-background">

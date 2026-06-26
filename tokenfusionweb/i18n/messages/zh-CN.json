@@ -335,6 +335,26 @@
       "featureUsageHint": "各功能 API 调用分布",
       "calls": "次"
     },
+    "settings": {
+      "title": "系统设置",
+      "subtitle": "管理平台配置与安全选项",
+      "general": "通用",
+      "payment": "支付",
+      "notifications": "通知",
+      "security": "安全",
+      "siteName": "站点名称",
+      "defaultLanguage": "默认语言",
+      "timezone": "时区",
+      "supportedMethods": "支持的支付方式",
+      "defaultCurrency": "默认货币",
+      "emailNotification": "邮件通知",
+      "orderAlert": "订单提醒",
+      "ipWhitelist": "IP 白名单",
+      "twoFactor": "双因素认证",
+      "enabled": "已启用",
+      "disabled": "已禁用",
+      "notConfigured": "未配置"
+    },
     "errors": {
       "fetchFailed": "数据加载失败，请重试。",
       "actionFailed": "操作失败，请重试。",

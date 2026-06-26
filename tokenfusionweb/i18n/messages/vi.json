@@ -335,6 +335,26 @@
       "featureUsageHint": "Phân bố lệnh gọi API theo tính năng",
       "calls": "lượt"
     },
+    "settings": {
+      "title": "Cài đặt hệ thống",
+      "subtitle": "Quản lý cấu hình nền tảng và tùy chọn bảo mật",
+      "general": "Chung",
+      "payment": "Thanh toán",
+      "notifications": "Thông báo",
+      "security": "Bảo mật",
+      "siteName": "Tên trang web",
+      "defaultLanguage": "Ngôn ngữ mặc định",
+      "timezone": "Múi giờ",
+      "supportedMethods": "Phương thức thanh toán được hỗ trợ",
+      "defaultCurrency": "Tiền tệ mặc định",
+      "emailNotification": "Thông báo email",
+      "orderAlert": "Cảnh báo đơn hàng",
+      "ipWhitelist": "Danh sách IP được phép",
+      "twoFactor": "Xác thực hai yếu tố",
+      "enabled": "Đã bật",
+      "disabled": "Đã tắt",
+      "notConfigured": "Chưa cấu hình"
+    },
     "errors": {
       "fetchFailed": "Tải dữ liệu thất bại. Vui lòng thử lại.",
       "actionFailed": "Thao tác thất bại. Vui lòng thử lại.",

@@ -1,4 +1,4 @@
-import {
+﻿import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -11,10 +11,7 @@ import {
 import { Plan } from './plan.entity';
 
 /**
- * 订阅状态枚举
- * - active: 生效中
- * - cancelled: 已取消（周期结束不再续费）
- * - past_due: 逾期未支付（扣款失败待重试）
+ * 璁㈤槄鐘舵€佹灇涓? * - active: 鐢熸晥涓? * - cancelled: 宸插彇娑堬紙鍛ㄦ湡缁撴潫涓嶅啀缁垂锛? * - past_due: 閫炬湡鏈敮浠橈紙鎵ｆ澶辫触寰呴噸璇曪級
  */
 export enum SubscriptionStatus {
   ACTIVE = 'active',
@@ -23,54 +20,52 @@ export enum SubscriptionStatus {
 }
 
 /**
- * 订阅实体
- * 记录用户的周期性订阅关系，对应第三方（Stripe / PayPal）的订阅对象
+ * 璁㈤槄瀹炰綋
+ * 璁板綍鐢ㄦ埛鐨勫懆鏈熸€ц闃呭叧绯伙紝瀵瑰簲绗笁鏂癸紙Stripe / PayPal锛夌殑璁㈤槄瀵硅薄
  *
- * 注意：实体属性由 TypeORM 在运行时通过装饰器反射注入（如查询结果回填），
- * 因此使用 ! 定型断言声明"由框架赋值"，以兼容 strictPropertyInitialization。
- */
+ * 娉ㄦ剰锛氬疄浣撳睘鎬х敱 TypeORM 鍦ㄨ繍琛屾椂閫氳繃瑁呴グ鍣ㄥ弽灏勬敞鍏ワ紙濡傛煡璇㈢粨鏋滃洖濉級锛? * 鍥犳浣跨敤 ! 瀹氬瀷鏂█澹版槑"鐢辨鏋惰祴鍊?锛屼互鍏煎 strictPropertyInitialization銆? */
 @Entity('subscriptions')
 export class Subscription {
-  /** 主键 ID */
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  /** 涓婚敭 ID */
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
-  /** 订阅所属用户 ID */
+  /** 璁㈤槄鎵€灞炵敤鎴?ID */
   @Index()
-  @Column({ name: 'user_id', type: 'bigint' })
+  @Column({ name: 'user_id', type: 'integer' })
   userId!: number;
 
-  /** 订阅的套餐 ID */
-  @Column({ name: 'plan_id', type: 'bigint' })
+  /** 璁㈤槄鐨勫椁?ID */
+  @Column({ name: 'plan_id', type: 'integer' })
   planId!: number;
 
-  /** 关联的套餐 */
+  /** 鍏宠仈鐨勫椁?*/
   @ManyToOne(() => Plan)
   @JoinColumn({ name: 'plan_id' })
   plan!: Plan;
 
-  /** 第三方订阅 ID（如 Stripe subscription id / PayPal subscription id） */
+  /** 绗笁鏂硅闃?ID锛堝 Stripe subscription id / PayPal subscription id锛?*/
   @Column({ name: 'external_sub_id', type: 'varchar', length: 128 })
   externalSubId!: string;
 
-  /** 订阅状态：active/cancelled/past_due */
+  /** 璁㈤槄鐘舵€侊細active/cancelled/past_due */
   @Index()
   @Column({ type: 'varchar', length: 32, default: SubscriptionStatus.ACTIVE })
   status!: SubscriptionStatus;
 
-  /** 当前周期结束时间（到期后决定是否续费） */
-  @Column({ name: 'current_period_end', type: 'timestamptz', nullable: true })
+  /** 褰撳墠鍛ㄦ湡缁撴潫鏃堕棿锛堝埌鏈熷悗鍐冲畾鏄惁缁垂锛?*/
+  @Column({ type: 'datetime', name: 'current_period_end', nullable: true })
   currentPeriodEnd!: Date | null;
 
-  /** 是否在周期结束时取消（用户主动取消订阅时置为 true） */
+  /** 鏄惁鍦ㄥ懆鏈熺粨鏉熸椂鍙栨秷锛堢敤鎴蜂富鍔ㄥ彇娑堣闃呮椂缃负 true锛?*/
   @Column({ name: 'cancel_at_period_end', type: 'boolean', default: false })
   cancelAtPeriodEnd!: boolean;
 
-  /** 创建时间 */
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  /** 鍒涘缓鏃堕棿 */
+  @CreateDateColumn({ name: 'created_at',  })
   createdAt!: Date;
 
-  /** 更新时间 */
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  /** 鏇存柊鏃堕棿 */
+  @UpdateDateColumn({ name: 'updated_at',  })
   updatedAt!: Date;
 }

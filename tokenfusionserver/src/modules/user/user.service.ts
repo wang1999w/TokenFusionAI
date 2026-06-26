@@ -149,7 +149,7 @@ export class UserService {
     return this.userRepository
       .createQueryBuilder('user')
       .where('user.email = :email', { email: email.toLowerCase().trim() })
-      .addSelect('user.password_hash')
+      .addSelect('user.passwordHash')
       .getOne();
   }
 

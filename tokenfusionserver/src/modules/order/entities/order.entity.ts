@@ -1,4 +1,4 @@
-import {
+﻿import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -12,9 +12,8 @@ import { Plan } from './plan.entity';
 import { Subscription } from './subscription.entity';
 
 /**
- * 支付渠道枚举
- * - stripe: Stripe（支持信用卡 / 订阅）
- * - paypal: PayPal
+ * 鏀粯娓犻亾鏋氫妇
+ * - stripe: Stripe锛堟敮鎸佷俊鐢ㄥ崱 / 璁㈤槄锛? * - paypal: PayPal
  */
 export enum PayChannel {
   STRIPE = 'stripe',
@@ -22,9 +21,8 @@ export enum PayChannel {
 }
 
 /**
- * 支付模式枚举
- * - one_time: 一次性付款
- * - subscription: 订阅周期扣款
+ * 鏀粯妯″紡鏋氫妇
+ * - one_time: 涓€娆℃€т粯娆? * - subscription: 璁㈤槄鍛ㄦ湡鎵ｆ
  */
 export enum PayMode {
   ONE_TIME = 'one_time',
@@ -32,13 +30,8 @@ export enum PayMode {
 }
 
 /**
- * 订单状态枚举
- * - pending: 待支付（已创建未完成支付）
- * - paid: 已支付
- * - failed: 支付失败
- * - refunded: 已退款
- * - cancelled: 已取消
- */
+ * 璁㈠崟鐘舵€佹灇涓? * - pending: 寰呮敮浠橈紙宸插垱寤烘湭瀹屾垚鏀粯锛? * - paid: 宸叉敮浠? * - failed: 鏀粯澶辫触
+ * - refunded: 宸查€€娆? * - cancelled: 宸插彇娑? */
 export enum OrderStatus {
   PENDING = 'pending',
   PAID = 'paid',
@@ -48,96 +41,93 @@ export enum OrderStatus {
 }
 
 /**
- * 订单实体
- * 记录用户的一次购买行为：套餐、金额、支付渠道、支付状态、关联的第三方交易号等
- *
- * 注意：实体属性由 TypeORM 在运行时通过装饰器反射注入（如查询结果回填），
- * 因此使用 ! 定型断言声明"由框架赋值"，以兼容 strictPropertyInitialization。
- */
+ * 璁㈠崟瀹炰綋
+ * 璁板綍鐢ㄦ埛鐨勪竴娆¤喘涔拌涓猴細濂楅銆侀噾棰濄€佹敮浠樻笭閬撱€佹敮浠樼姸鎬併€佸叧鑱旂殑绗笁鏂逛氦鏄撳彿绛? *
+ * 娉ㄦ剰锛氬疄浣撳睘鎬х敱 TypeORM 鍦ㄨ繍琛屾椂閫氳繃瑁呴グ鍣ㄥ弽灏勬敞鍏ワ紙濡傛煡璇㈢粨鏋滃洖濉級锛? * 鍥犳浣跨敤 ! 瀹氬瀷鏂█澹版槑"鐢辨鏋惰祴鍊?锛屼互鍏煎 strictPropertyInitialization銆? */
 @Entity('orders')
 export class Order {
-  /** 主键 ID */
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  /** 涓婚敭 ID */
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
-  /** 业务订单号（唯一），用于对外展示与对账，如 ORD20240627xxxx */
+  /** 涓氬姟璁㈠崟鍙凤紙鍞竴锛夛紝鐢ㄤ簬瀵瑰灞曠ず涓庡璐︼紝濡?ORD20240627xxxx */
   @Index({ unique: true })
   @Column({ name: 'order_no', type: 'varchar', length: 32, unique: true })
   orderNo!: string;
 
-  /** 下单用户 ID */
+  /** 涓嬪崟鐢ㄦ埛 ID */
   @Index()
-  @Column({ name: 'user_id', type: 'bigint' })
+  @Column({ name: 'user_id', type: 'integer' })
   userId!: number;
 
-  /** 套餐 ID（关联 plans 表） */
-  @Column({ name: 'plan_id', type: 'bigint' })
+  /** 濂楅 ID锛堝叧鑱?plans 琛級 */
+  @Column({ name: 'plan_id', type: 'integer' })
   planId!: number;
 
-  /** 关联的套餐（多对一） */
+  /** 鍏宠仈鐨勫椁愶紙澶氬涓€锛?*/
   @ManyToOne(() => Plan)
   @JoinColumn({ name: 'plan_id' })
   plan!: Plan;
 
-  /** 实付金额（单位：分） */
+  /** 瀹炰粯閲戦锛堝崟浣嶏細鍒嗭級 */
   @Column({ name: 'amount_cents', type: 'integer' })
   amountCents!: number;
 
-  /** 币种 */
+  /** 甯佺 */
   @Column({ type: 'varchar', length: 8, default: 'USD' })
   currency!: string;
 
-  /** 该订单对应的 Token 数量 */
-  @Column({ name: 'token_amount', type: 'bigint' })
+  /** 璇ヨ鍗曞搴旂殑 Token 鏁伴噺 */
+  @Column({ name: 'token_amount', type: 'integer' })
   tokenAmount!: number;
 
-  /** 支付渠道：stripe / paypal */
+  /** 鏀粯娓犻亾锛歴tripe / paypal */
   @Column({ name: 'pay_channel', type: 'varchar', length: 16 })
   payChannel!: PayChannel;
 
-  /** 支付模式：one_time / subscription */
+  /** 鏀粯妯″紡锛歰ne_time / subscription */
   @Column({ name: 'pay_mode', type: 'varchar', length: 16 })
   payMode!: PayMode;
 
-  /** 订单状态：pending/paid/failed/refunded/cancelled */
+  /** 璁㈠崟鐘舵€侊細pending/paid/failed/refunded/cancelled */
   @Index()
   @Column({ type: 'varchar', length: 32, default: OrderStatus.PENDING })
   status!: OrderStatus;
 
-  /** 第三方支付交易号（如 Stripe charge id / PayPal capture id） */
+  /** 绗笁鏂规敮浠樹氦鏄撳彿锛堝 Stripe charge id / PayPal capture id锛?*/
   @Column({ name: 'transaction_id', type: 'varchar', length: 128, nullable: true })
   transactionId!: string | null;
 
-  /** Stripe Checkout Session ID（用于查询/对账） */
+  /** Stripe Checkout Session ID锛堢敤浜庢煡璇?瀵硅处锛?*/
   @Column({ name: 'stripe_session_id', type: 'varchar', length: 128, nullable: true })
   stripeSessionId!: string | null;
 
-  /** 关联的订阅 ID（仅订阅订单有值） */
-  @Column({ name: 'subscription_id', type: 'bigint', nullable: true })
+  /** 鍏宠仈鐨勮闃?ID锛堜粎璁㈤槄璁㈠崟鏈夊€硷級 */
+  @Column({ name: 'subscription_id', type: 'integer', nullable: true })
   subscriptionId!: number | null;
 
-  /** 关联的订阅实体 */
+  /** 鍏宠仈鐨勮闃呭疄浣?*/
   @ManyToOne(() => Subscription, { nullable: true })
   @JoinColumn({ name: 'subscription_id' })
   subscription!: Subscription | null;
 
-  /** 支付成功时间 */
-  @Column({ name: 'paid_at', type: 'timestamptz', nullable: true })
+  /** 鏀粯鎴愬姛鏃堕棿 */
+  @Column({ type: 'datetime', name: 'paid_at', nullable: true })
   paidAt!: Date | null;
 
-  /** 退款时间 */
-  @Column({ name: 'refunded_at', type: 'timestamptz', nullable: true })
+  /** 閫€娆炬椂闂?*/
+  @Column({ type: 'datetime', name: 'refunded_at', nullable: true })
   refundedAt!: Date | null;
 
-  /** 扩展元数据（JSON），如支付渠道返回的原始信息 */
-  @Column({ type: 'jsonb', default: () => "'{}'::jsonb" })
+  /** 鎵╁睍鍏冩暟鎹紙JSON锛夛紝濡傛敮浠樻笭閬撹繑鍥炵殑鍘熷淇℃伅 */
+  @Column({ type: 'simple-json', default: () => "'{}'" })
   metadata!: Record<string, any>;
 
-  /** 创建时间 */
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  /** 鍒涘缓鏃堕棿 */
+  @CreateDateColumn({ name: 'created_at',  })
   createdAt!: Date;
 
-  /** 更新时间 */
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  /** 鏇存柊鏃堕棿 */
+  @UpdateDateColumn({ name: 'updated_at',  })
   updatedAt!: Date;
 }

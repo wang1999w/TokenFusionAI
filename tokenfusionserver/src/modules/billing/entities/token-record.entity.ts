@@ -1,4 +1,4 @@
-import {
+﻿import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -7,17 +7,9 @@ import {
 } from 'typeorm';
 
 /**
- * Token 流水类型枚举
- * 每种类型对应一次账户资金变动方向：
- * - recharge   充值（balance 增加）
- * - consume    消耗结算（frozen 减少，totalConsumed 增加，balance 不变）
- * - freeze     预扣冻结（balance 减少，frozen 增加）
- * - unfreeze   冻结释放（frozen 减少，balance 增加）
- * - rollback   失败回补（frozen 减少，balance 增加）
- * - gift       赠额（balance 增加，totalGifted 增加）
- * - expire     过期失效（余额/冻结扣减）
- * - refund     退款（balance 增加）
- */
+ * Token 娴佹按绫诲瀷鏋氫妇
+ * 姣忕绫诲瀷瀵瑰簲涓€娆¤处鎴疯祫閲戝彉鍔ㄦ柟鍚戯細
+ * - recharge   鍏呭€硷紙balance 澧炲姞锛? * - consume    娑堣€楃粨绠楋紙frozen 鍑忓皯锛宼otalConsumed 澧炲姞锛宐alance 涓嶅彉锛? * - freeze     棰勬墸鍐荤粨锛坆alance 鍑忓皯锛宖rozen 澧炲姞锛? * - unfreeze   鍐荤粨閲婃斁锛坒rozen 鍑忓皯锛宐alance 澧炲姞锛? * - rollback   澶辫触鍥炶ˉ锛坒rozen 鍑忓皯锛宐alance 澧炲姞锛? * - gift       璧犻锛坆alance 澧炲姞锛宼otalGifted 澧炲姞锛? * - expire     杩囨湡澶辨晥锛堜綑棰?鍐荤粨鎵ｅ噺锛? * - refund     閫€娆撅紙balance 澧炲姞锛? */
 export enum TokenRecordType {
   RECHARGE = 'recharge',
   CONSUME = 'consume',
@@ -30,8 +22,8 @@ export enum TokenRecordType {
 }
 
 /**
- * 业务类型枚举
- * 标识 Token 消耗来源于哪一类业务，便于按业务维度对账与统计
+ * 涓氬姟绫诲瀷鏋氫妇
+ * 鏍囪瘑 Token 娑堣€楁潵婧愪簬鍝竴绫讳笟鍔★紝渚夸簬鎸変笟鍔＄淮搴﹀璐︿笌缁熻
  */
 export enum BizType {
   CHAT = 'chat',
@@ -42,67 +34,58 @@ export enum BizType {
 }
 
 /**
- * Token 流水实体
- * 记录每一次 Token 变动的明细账目，属于不可变账本（只增不改）
+ * Token 娴佹按瀹炰綋
+ * 璁板綍姣忎竴娆?Token 鍙樺姩鐨勬槑缁嗚处鐩紝灞炰簬涓嶅彲鍙樿处鏈紙鍙涓嶆敼锛? *
+ * 瀛楁绾﹀畾锛? * - amount 姝ｆ暟琛ㄧず璧勯噾娴佸叆锛岃礋鏁拌〃绀鸿祫閲戞祦鍑猴紙姝ｈ繘璐熷嚭锛? * - balance_after 涓烘湰娆″彉鍔ㄥ悗鐨勮处鎴峰彲鐢ㄤ綑棰濆揩鐓э紝渚夸簬鏍稿涓庡璁? * - idempotency_key 鍏ㄥ眬鍞竴锛岀敤浜庢帴鍙ｅ箓绛夐槻閲嶏紝閬垮厤鍚屼竴绗旀搷浣滆閲嶅鎵ц
  *
- * 字段约定：
- * - amount 正数表示资金流入，负数表示资金流出（正进负出）
- * - balance_after 为本次变动后的账户可用余额快照，便于核对与审计
- * - idempotency_key 全局唯一，用于接口幂等防重，避免同一笔操作被重复执行
+ * 绱㈠紩璇存槑锛堝疄闄呯储寮曠敱杩佺Щ鏂囦欢鍒涘缓锛屾澶勮楗板櫒浠呬綔鍏冩暟鎹０鏄庯級锛? * 1) (user_id, created_at) 鈥斺€?鏀寔鐢ㄦ埛娴佹按鍒嗛〉鏌ヨ锛堟寜鏃堕棿鍊掑簭锛? * 2) (biz_type, biz_id)     鈥斺€?鏀寔鎸変笟鍔＄淮搴﹀璐? * 3) idempotency_key        鈥斺€?鍒楃骇 UNIQUE锛岃嚜鍔ㄧ敓鎴愬敮涓€绱㈠紩鐢ㄤ簬闃查噸
  *
- * 索引说明（实际索引由迁移文件创建，此处装饰器仅作元数据声明）：
- * 1) (user_id, created_at) —— 支持用户流水分页查询（按时间倒序）
- * 2) (biz_type, biz_id)     —— 支持按业务维度对账
- * 3) idempotency_key        —— 列级 UNIQUE，自动生成唯一索引用于防重
- *
- * 注：属性使用 `!`（确定性赋值断言），表示这些字段由 TypeORM 在查询时自动填充，
- * 无需在构造时初始化（满足 strictPropertyInitialization 检查）。
- */
+ * 娉細灞炴€т娇鐢?`!`锛堢‘瀹氭€ц祴鍊兼柇瑷€锛夛紝琛ㄧず杩欎簺瀛楁鐢?TypeORM 鍦ㄦ煡璇㈡椂鑷姩濉厖锛? * 鏃犻渶鍦ㄦ瀯閫犳椂鍒濆鍖栵紙婊¤冻 strictPropertyInitialization 妫€鏌ワ級銆? */
 @Entity('token_records')
 @Index('idx_token_records_user_created', ['userId', 'createdAt'])
 @Index('idx_token_records_biz', ['bizType', 'bizId'])
 export class TokenRecord {
-  /** 流水自增主键 */
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  /** 娴佹按鑷涓婚敭 */
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
-  /** 所属用户 ID */
-  @Column({ name: 'user_id', type: 'bigint' })
+  /** 鎵€灞炵敤鎴?ID */
+  @Column({ name: 'user_id', type: 'integer' })
   userId!: number;
 
-  /** 关联的 Token 账户 ID（token_accounts.id） */
-  @Column({ name: 'account_id', type: 'bigint' })
+  /** 鍏宠仈鐨?Token 璐︽埛 ID锛坱oken_accounts.id锛?*/
+  @Column({ name: 'account_id', type: 'integer' })
   accountId!: number;
 
-  /** 变动金额：正进负出（充值/赠额/回补为正，冻结/消耗为负） */
-  @Column({ type: 'bigint' })
+  /** 鍙樺姩閲戦锛氭杩涜礋鍑猴紙鍏呭€?璧犻/鍥炶ˉ涓烘锛屽喕缁?娑堣€椾负璐燂級 */
+  @Column({ type: 'integer' })
   amount!: number;
 
-  /** 流水类型 */
+  /** 娴佹按绫诲瀷 */
   @Column({ type: 'varchar', length: 32 })
   type!: TokenRecordType;
 
-  /** 业务类型（chat/image/video/code/api）；充值/赠额等无业务上下文时为 NULL */
+  /** 涓氬姟绫诲瀷锛坈hat/image/video/code/api锛夛紱鍏呭€?璧犻绛夋棤涓氬姟涓婁笅鏂囨椂涓?NULL */
   @Column({ name: 'biz_type', type: 'varchar', length: 32, nullable: true })
   bizType!: BizType | null;
 
-  /** 业务 ID（如订单号、对话 ID 等），用于业务对账 */
+  /** 涓氬姟 ID锛堝璁㈠崟鍙枫€佸璇?ID 绛夛級锛岀敤浜庝笟鍔″璐?*/
   @Column({ name: 'biz_id', type: 'varchar', length: 64, nullable: true })
   bizId!: string | null;
 
-  /** 本次变动后的账户可用余额快照 */
-  @Column({ name: 'balance_after', type: 'bigint' })
+  /** 鏈鍙樺姩鍚庣殑璐︽埛鍙敤浣欓蹇収 */
+  @Column({ name: 'balance_after', type: 'integer' })
   balanceAfter!: number;
 
-  /** 幂等键：全局唯一，防止同一笔操作重复执行 */
+  /** 骞傜瓑閿細鍏ㄥ眬鍞竴锛岄槻姝㈠悓涓€绗旀搷浣滈噸澶嶆墽琛?*/
   @Column({ name: 'idempotency_key', type: 'varchar', length: 64, unique: true })
   idempotencyKey!: string;
 
-  /** 备注（如订单号、赠额场景等说明信息） */
+  /** 澶囨敞锛堝璁㈠崟鍙枫€佽禒棰濆満鏅瓑璇存槑淇℃伅锛?*/
   @Column({ type: 'text', nullable: true })
   remark!: string | null;
 
-  /** 创建时间（流水只增不改，仅含 created_at） */
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  /** 鍒涘缓鏃堕棿锛堟祦姘村彧澧炰笉鏀癸紝浠呭惈 created_at锛?*/
+  @CreateDateColumn({ name: 'created_at',  })
   createdAt!: Date;
 }

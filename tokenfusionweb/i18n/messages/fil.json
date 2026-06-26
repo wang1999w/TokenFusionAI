@@ -335,6 +335,26 @@
       "featureUsageHint": "Distribusyon ng API calls bawat feature",
       "calls": "calls"
     },
+    "settings": {
+      "title": "Mga Setting ng Sistema",
+      "subtitle": "Pamahalaan ang configuration ng platform at mga opsyon sa seguridad",
+      "general": "Pangkalahatan",
+      "payment": "Pagbabayad",
+      "notifications": "Mga Notipikasyon",
+      "security": "Seguridad",
+      "siteName": "Pangalan ng Site",
+      "defaultLanguage": "Default na Wika",
+      "timezone": "Timezone",
+      "supportedMethods": "Mga Sinusuportahang Payment Method",
+      "defaultCurrency": "Default na Currency",
+      "emailNotification": "Email Notification",
+      "orderAlert": "Order Alert",
+      "ipWhitelist": "IP Whitelist",
+      "twoFactor": "Two-Factor Authentication",
+      "enabled": "Pinapagana",
+      "disabled": "Hindi Pinapagana",
+      "notConfigured": "Hindi Pa Na-configure"
+    },
     "errors": {
       "fetchFailed": "Nabigo ang pag-load ng data. Pakisubukan muli.",
       "actionFailed": "Nabigo ang aksyon. Pakisubukan muli.",

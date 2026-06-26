@@ -335,6 +335,26 @@
       "featureUsageHint": "Distribusi panggilan API per fitur",
       "calls": "panggilan"
     },
+    "settings": {
+      "title": "Pengaturan Sistem",
+      "subtitle": "Kelola konfigurasi platform dan opsi keamanan",
+      "general": "Umum",
+      "payment": "Pembayaran",
+      "notifications": "Notifikasi",
+      "security": "Keamanan",
+      "siteName": "Nama Situs",
+      "defaultLanguage": "Bahasa Default",
+      "timezone": "Zona Waktu",
+      "supportedMethods": "Metode Pembayaran yang Didukung",
+      "defaultCurrency": "Mata Uang Default",
+      "emailNotification": "Notifikasi Email",
+      "orderAlert": "Peringatan Pesanan",
+      "ipWhitelist": "Daftar IP yang Diizinkan",
+      "twoFactor": "Autentikasi Dua Faktor",
+      "enabled": "Diaktifkan",
+      "disabled": "Dinonaktifkan",
+      "notConfigured": "Belum Dikonfigurasi"
+    },
     "errors": {
       "fetchFailed": "Gagal memuat data. Silakan coba lagi.",
       "actionFailed": "Aksi gagal. Silakan coba lagi.",

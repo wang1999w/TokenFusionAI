@@ -1,0 +1,233 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-gradient: linear-gradient(135deg, #3b82f6, #06b6d4);
+    --brand-primary: #06b6d4;
+    --brand-background: #0b1120;
+    --brand-card: #111827;
+    --brand-warning: #f59e0b;
+    --brand-success: #10b981;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #475569;
+  }
+
+  * {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  body {
+    background-color: #0b1120;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .text-brand-gradient {
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  }
+}
+
+/* ============================================================
+ * 动态背景动画系统
+ * 模拟视频循环效果的 CSS 动画
+ * ============================================================ */
+
+/* Hero 区背景缓慢渐变流动 */
+@keyframes heroGradientShift {
+  0%, 100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.4;
+  }
+  33% {
+    transform: scale(1.08) translate(-2%, 1%);
+    opacity: 0.55;
+  }
+  66% {
+    transform: scale(1.05) translate(2%, -1%);
+    opacity: 0.45;
+  }
+}
+
+/* 粒子缓慢漂浮 */
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-30px) translateX(10px);
+    opacity: 0.6;
+  }
+}
+
+/* 光晕脉动 */
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.15);
+  }
+}
+
+/* 扫描光线 */
+@keyframes scanLine {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* 网格脉冲 */
+@keyframes gridPulse {
+  0%, 100% {
+    opacity: 0.03;
+  }
+  50% {
+    opacity: 0.08;
+  }
+}
+
+/* 漂浮元素 */
+@keyframes floatElement {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* 光线旋转 */
+@keyframes rotateGlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 渐变文字闪烁 */
+@keyframes gradientShine {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* 应用动画的工具类 */
+.animate-hero-bg {
+  animation: heroGradientShift 20s ease-in-out infinite;
+}
+
+.animate-particle {
+  animation: particleFloat 8s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 6s ease-in-out infinite;
+}
+
+.animate-scan-line {
+  animation: scanLine 8s linear infinite;
+}
+
+.animate-grid-pulse {
+  animation: gridPulse 4s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: floatElement 4s ease-in-out infinite;
+}
+
+.animate-rotate-glow {
+  animation: rotateGlow 30s linear infinite;
+}
+
+.animate-gradient-shine {
+  background-size: 200% 200%;
+  animation: gradientShine 5s ease-in-out infinite;
+}
+
+/* 延迟变体 */
+.delay-1 { animation-delay: 1s; }
+.delay-2 { animation-delay: 2s; }
+.delay-3 { animation-delay: 3s; }
+.delay-4 { animation-delay: 4s; }
+
+/* 科技网格背景 */
+.tech-grid-bg {
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* 玻璃态卡片 */
+.glass-card {
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 发光边框 */
+.glow-border {
+  box-shadow:
+    0 0 20px rgba(6, 182, 212, 0.15),
+    0 0 40px rgba(59, 130, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* 渐变光带 */
+.gradient-beam {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(6, 182, 212, 0.4),
+    rgba(59, 130, 246, 0.4),
+    transparent
+  );
+}
+
+/* 响应 prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-bg,
+  .animate-particle,
+  .animate-glow-pulse,
+  .animate-scan-line,
+  .animate-grid-pulse,
+  .animate-float,
+  .animate-rotate-glow,
+  .animate-gradient-shine {
+    animation: none;
+  }
+}

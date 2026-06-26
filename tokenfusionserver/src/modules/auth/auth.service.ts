@@ -32,6 +32,8 @@ import { ErrorCodes } from '../../common/constants/error-codes';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
+  /** 内存缓存（Redis 不可用时的降级方案） */
+  private readonly memoryStore = new Map<string, { value: string; expireAt: number }>();
 
   constructor(
     private readonly userService: UserService,
@@ -43,6 +45,69 @@ export class AuthService {
     @InjectRepository(DeviceBind)
     private readonly deviceBindRepository: Repository<DeviceBind>,
   ) {}
+
+  /**
+   * KV 存储辅助方法
+   * 优先使用 Redis，连接失败时降级为内存 Map
+   */
+  private async kvSet(key: string, value: string, ttlSeconds: number): Promise<void> {
+    try {
+      const { default: Redis } = await import('ioredis');
+      const redis = new Redis({
+        host: this.configService.get<string>('REDIS_HOST', 'localhost'),
+        port: this.configService.get<number>('REDIS_PORT', 6379),
+        password: this.configService.get<string>('REDIS_PASSWORD'),
+        retryStrategy: () => null, // 不重试
+        maxRetriesPerRequest: 0,
+      });
+      await redis.set(key, value, 'EX', ttlSeconds);
+      await redis.disconnect();
+    } catch {
+      // Redis 不可用，降级为内存存储
+      this.memoryStore.set(key, { value, expireAt: Date.now() + ttlSeconds * 1000 });
+    }
+  }
+
+  private async kvGet(key: string): Promise<string | null> {
+    try {
+      const { default: Redis } = await import('ioredis');
+      const redis = new Redis({
+        host: this.configService.get<string>('REDIS_HOST', 'localhost'),
+        port: this.configService.get<number>('REDIS_PORT', 6379),
+        password: this.configService.get<string>('REDIS_PASSWORD'),
+        retryStrategy: () => null,
+        maxRetriesPerRequest: 0,
+      });
+      const val = await redis.get(key);
+      await redis.disconnect();
+      return val;
+    } catch {
+      const entry = this.memoryStore.get(key);
+      if (!entry) return null;
+      if (Date.now() > entry.expireAt) {
+        this.memoryStore.delete(key);
+        return null;
+      }
+      return entry.value;
+    }
+  }
+
+  private async kvDel(key: string): Promise<void> {
+    try {
+      const { default: Redis } = await import('ioredis');
+      const redis = new Redis({
+        host: this.configService.get<string>('REDIS_HOST', 'localhost'),
+        port: this.configService.get<number>('REDIS_PORT', 6379),
+        password: this.configService.get<string>('REDIS_PASSWORD'),
+        retryStrategy: () => null,
+        maxRetriesPerRequest: 0,
+      });
+      await redis.del(key);
+      await redis.disconnect();
+    } catch {
+      this.memoryStore.delete(key);
+    }
+  }
 
   /**
    * 用户登录
@@ -186,17 +251,8 @@ export class AuthService {
 
     const code = CryptoUtil.generateVerificationCode();
 
-    // 将验证码存入 Redis（10 分钟过期）
-    // 注意：RedisService 将在 Phase 2 接入，当前使用数据库临时存储
-    // TODO: Phase 2 接入 Redis 后迁移验证码存储
-    const { default: Redis } = await import('ioredis');
-    const redis = new Redis({
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-      password: this.configService.get<string>('REDIS_PASSWORD'),
-    });
-    await redis.set(`verify:${email}`, code, 'EX', 600); // 10 分钟过期
-    await redis.disconnect();
+    // 将验证码存入 Redis（10 分钟过期），Redis 不可用时降级为内存存储
+    await this.kvSet(`verify:${email}`, code, 600);
 
     // 发送验证码邮件
     await this.emailService.sendVerificationCode(email, code);
@@ -207,15 +263,7 @@ export class AuthService {
    * 验证邮箱
    */
   async verifyEmail(dto: VerifyEmailDto): Promise<void> {
-    const { default: Redis } = await import('ioredis');
-    const redis = new Redis({
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-      password: this.configService.get<string>('REDIS_PASSWORD'),
-    });
-
-    const storedCode = await redis.get(`verify:${dto.email}`);
-    await redis.disconnect();
+    const storedCode = await this.kvGet(`verify:${dto.email}`);
 
     if (!storedCode) {
       throw new BadRequestException({
@@ -238,13 +286,7 @@ export class AuthService {
     }
 
     // 删除验证码
-    const redis2 = new Redis({
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-      password: this.configService.get<string>('REDIS_PASSWORD'),
-    });
-    await redis2.del(`verify:${dto.email}`);
-    await redis2.disconnect();
+    await this.kvDel(`verify:${dto.email}`);
 
     this.logger.log(`邮箱验证成功：${dto.email}`);
   }
@@ -262,15 +304,8 @@ export class AuthService {
     // 生成重置令牌
     const resetToken = CryptoUtil.generateToken();
 
-    // 存入 Redis（30 分钟过期）
-    const { default: Redis } = await import('ioredis');
-    const redis = new Redis({
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-      password: this.configService.get<string>('REDIS_PASSWORD'),
-    });
-    await redis.set(`reset:${resetToken}`, user.id, 'EX', 1800); // 30 分钟过期
-    await redis.disconnect();
+    // 存入 Redis（30 分钟过期），降级为内存存储
+    await this.kvSet(`reset:${resetToken}`, String(user.id), 1800);
 
     // 发送重置邮件
     await this.emailService.sendPasswordReset(user.email, resetToken);
@@ -281,14 +316,7 @@ export class AuthService {
    * 重置密码
    */
   async resetPassword(dto: ResetPasswordDto): Promise<void> {
-    const { default: Redis } = await import('ioredis');
-    const redis = new Redis({
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-      password: this.configService.get<string>('REDIS_PASSWORD'),
-    });
-
-    const userId = await redis.get(`reset:${dto.token}`);
+    const userId = await this.kvGet(`reset:${dto.token}`);
     if (!userId) {
       throw new BadRequestException({
         code: ErrorCodes.RESET_TOKEN_EXPIRED,
@@ -300,8 +328,7 @@ export class AuthService {
     await this.userService.updatePassword(parseInt(userId, 10), dto.password);
 
     // 删除重置令牌
-    await redis.del(`reset:${dto.token}`);
-    await redis.disconnect();
+    await this.kvDel(`reset:${dto.token}`);
 
     // 吊销该用户所有 refresh_token
     await this.refreshTokenRepository.update(

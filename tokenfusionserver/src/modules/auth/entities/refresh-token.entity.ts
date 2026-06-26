@@ -1,4 +1,4 @@
-import {
+﻿import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -10,17 +10,16 @@ import {
 import { User } from '../../user/user.entity';
 
 /**
- * 刷新令牌实体
- * 支持多设备登录与令牌吊销
- * 每个 refresh_token 哈希存储，不存明文
- */
+ * 鍒锋柊浠ょ墝瀹炰綋
+ * 鏀寔澶氳澶囩櫥褰曚笌浠ょ墝鍚婇攢
+ * 姣忎釜 refresh_token 鍝堝笇瀛樺偍锛屼笉瀛樻槑鏂? */
 @Entity('refresh_tokens')
 export class RefreshToken {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
   @Index()
-  @Column({ name: 'user_id', type: 'bigint' })
+  @Column({ name: 'user_id', type: 'integer' })
   userId!: number;
 
   @ManyToOne(() => User, (user) => user.refreshTokens)
@@ -36,15 +35,15 @@ export class RefreshToken {
   @Column({ name: 'user_agent', type: 'text', nullable: true })
   userAgent!: string | null;
 
-  @Column({ type: 'inet', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   ip!: string | null;
 
-  @Column({ name: 'expires_at', type: 'timestamptz' })
+  @Column({ type: 'datetime', name: 'expires_at',  })
   expiresAt!: Date;
 
   @Column({ type: 'boolean', default: false })
   revoked!: boolean;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({ name: 'created_at',  })
   createdAt!: Date;
 }

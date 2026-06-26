@@ -179,5 +179,5 @@ export const api = {
   },
 };
 
-export { request, ApiError };
+export { request };
 export type { RequestOptions };

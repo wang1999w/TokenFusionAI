@@ -44,7 +44,10 @@ docker-compose.override.yml
 coverage/
 .nyc_output/
 
+# Database (local SQLite dev)
+tokenfusionserver/data/
+
 # Misc
 .trae/
 *.pid
-.seed
+*.seed

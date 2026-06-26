@@ -335,6 +335,26 @@
       "featureUsageHint": "Distribution of API calls by feature",
       "calls": "calls"
     },
+    "settings": {
+      "title": "System Settings",
+      "subtitle": "Manage platform configuration and security options",
+      "general": "General",
+      "payment": "Payment",
+      "notifications": "Notifications",
+      "security": "Security",
+      "siteName": "Site Name",
+      "defaultLanguage": "Default Language",
+      "timezone": "Timezone",
+      "supportedMethods": "Supported Payment Methods",
+      "defaultCurrency": "Default Currency",
+      "emailNotification": "Email Notification",
+      "orderAlert": "Order Alert",
+      "ipWhitelist": "IP Whitelist",
+      "twoFactor": "Two-Factor Authentication",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "notConfigured": "Not Configured"
+    },
     "errors": {
       "fetchFailed": "Failed to load data. Please try again.",
       "actionFailed": "Action failed. Please try again.",
