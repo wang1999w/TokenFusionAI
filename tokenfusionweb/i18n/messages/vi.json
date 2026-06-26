@@ -1,0 +1,110 @@
+{
+  "common": {
+    "appName": "TokenFusion AI",
+    "slogan": "Một Token, AI Không Giới Hạn",
+    "getStarted": "Bắt Đầu",
+    "learnMore": "Tìm Hiểu Thêm",
+    "signIn": "Đăng Nhập",
+    "signUp": "Đăng Ký",
+    "getFreeTokens": "Nhận Token Miễn Phí",
+    "viewPricing": "Xem Bảng Giá",
+    "loading": "Đang tải...",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép!",
+    "download": "Tải xuống",
+    "share": "Chia sẻ",
+    "delete": "Xóa",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "save": "Lưu",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "retry": "Thử lại"
+  },
+  "nav": {
+    "features": "Tính năng",
+    "pricing": "Bảng giá",
+    "api": "API",
+    "docs": "Tài liệu",
+    "faq": "Câu hỏi thường gặp",
+    "dashboard": "Bảng điều khiển",
+    "history": "Lịch sử",
+    "apiKeys": "Khóa API",
+    "billing": "Thanh toán",
+    "settings": "Cài đặt"
+  },
+  "hero": {
+    "title": "Bộ AI Tất Cả Trong Một, Rẻ Hơn OpenAI 70%",
+    "subtitle": "Trò chuyện, Hình ảnh, Video, Tạo mã tại một nơi. Trả theo token, không cần đăng ký, không cần thẻ tín dụng.",
+    "badge1": "Token Phổ Thông",
+    "badge2": "Tạo Ngay Lập Tức",
+    "badge3": "Quyền Riêng Tư Lên Hàng Đầu",
+    "cta": "Bắt Đầu Tạo Miễn Phí",
+    "trustText": "Được hơn 12.000 nhà sáng tạo và lập trình viên trên toàn thế giới tin tưởng"
+  },
+  "tools": {
+    "chat": "AI Trò chuyện",
+    "image": "AI Hình ảnh",
+    "video": "AI Video",
+    "code": "AI Mã",
+    "chatDesc": "Trò chuyện nhiều vòng với AI",
+    "imageDesc": "Tạo hình ảnh tuyệt đẹp từ văn bản",
+    "videoDesc": "Tạo video từ văn bản hoặc hình ảnh",
+    "codeDesc": "Tạo mã từ ngôn ngữ tự nhiên"
+  },
+  "pricing": {
+    "title": "Bảng giá token đơn giản, không phí ẩn",
+    "oneTime": "Mua một lần",
+    "subscription": "Đăng ký hàng tháng",
+    "free": "Miễn phí",
+    "starter": "Khởi đầu",
+    "pro": "Chuyên nghiệp",
+    "developer": "Nhà phát triển",
+    "popular": "Phổ biến nhất",
+    "buyNow": "Mua ngay",
+    "subscribe": "Đăng ký",
+    "getApiKey": "Lấy khóa API",
+    "signUpFree": "Đăng ký miễn phí",
+    "note": "Tất cả token hoạt động trên mọi tính năng. Gói một lần không tự động gia hạn."
+  },
+  "auth": {
+    "loginTitle": "Đăng Nhập",
+    "registerTitle": "Tạo Tài Khoản",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "rememberMe": "Nhớ tôi",
+    "noAccount": "Chưa có tài khoản?",
+    "hasAccount": "Đã có tài khoản?",
+    "signUpNow": "Đăng ký",
+    "signInNow": "Đăng nhập",
+    "verifyEmail": "Xác minh email",
+    "sendCode": "Gửi mã",
+    "resetPassword": "Đặt lại mật khẩu"
+  },
+  "dashboard": {
+    "title": "Bảng điều khiển",
+    "tokenBalance": "Số dư token",
+    "totalConsumed": "Tổng đã sử dụng",
+    "totalRecharged": "Tổng đã nạp",
+    "consumptionTrend": "Xu hướng tiêu thụ",
+    "featureUsage": "Sử dụng tính năng"
+  },
+  "errors": {
+    "tokenInsufficient": "Số dư token không đủ. Vui lòng nạp thêm.",
+    "rateLimited": "Quá nhiều yêu cầu. Vui lòng thử lại sau.",
+    "loginRequired": "Vui lòng đăng nhập để tiếp tục.",
+    "tempEmailBlocked": "Không cho phép sử dụng địa chỉ email tạm thời."
+  },
+  "footer": {
+    "product": "Sản phẩm",
+    "resources": "Tài nguyên",
+    "legal": "Pháp lý",
+    "company": "Công ty",
+    "privacyPolicy": "Chính sách bảo mật",
+    "termsOfService": "Điều khoản dịch vụ",
+    "refundPolicy": "Chính sách hoàn tiền",
+    "copyright": "© 2024 TokenFusion AI. Bảo lưu mọi quyền."
+  }
+}

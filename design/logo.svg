@@ -1,0 +1,42 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 定义渐变色 - 主渐变 3B82F6 → 06B6D4 -->
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <!-- 发光效果滤镜 -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 融合环 - 两条对称渐变弧形线条交汇，形成类无限符号闭环结构 -->
+  <!-- 上半弧 -->
+  <path d="M 128 48 
+           C 80 48, 48 96, 48 128
+           C 48 160, 80 208, 128 208" 
+        stroke="url(#brandGradient)" 
+        stroke-width="14" 
+        stroke-linecap="round" 
+        fill="none"
+        filter="url(#glow)"/>
+  
+  <!-- 下半弧（镜像） -->
+  <path d="M 128 48 
+           C 176 48, 208 96, 208 128
+           C 208 160, 176 208, 128 208" 
+        stroke="url(#brandGradient)" 
+        stroke-width="14" 
+        stroke-linecap="round" 
+        fill="none"
+        filter="url(#glow)"/>
+  
+  <!-- 中心发光圆点 - 代表统一 Token 体系 -->
+  <circle cx="128" cy="128" r="20" fill="url(#brandGradient)" filter="url(#glow)"/>
+  <circle cx="128" cy="128" r="10" fill="#FFFFFF" opacity="0.9"/>
+</svg>

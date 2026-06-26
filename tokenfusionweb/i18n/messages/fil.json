@@ -1,0 +1,110 @@
+{
+  "common": {
+    "appName": "TokenFusion AI",
+    "slogan": "Isang Token, Walang Limitasyong AI",
+    "getStarted": "Magsimula",
+    "learnMore": "Matuto ng Higit Pa",
+    "signIn": "Mag-sign In",
+    "signUp": "Mag-sign Up",
+    "getFreeTokens": "Kumuha ng Libreng Tokens",
+    "viewPricing": "Tingnan ang Presyo",
+    "loading": "Naglo-load...",
+    "copy": "Kopyahin",
+    "copied": "Nakopya na!",
+    "download": "I-download",
+    "share": "Ibahagi",
+    "delete": "Tanggalin",
+    "cancel": "Kanselahin",
+    "confirm": "Kumpirmahin",
+    "save": "I-save",
+    "back": "Bumalik",
+    "next": "Susunod",
+    "retry": "Subukang muli"
+  },
+  "nav": {
+    "features": "Mga Tampok",
+    "pricing": "Presyo",
+    "api": "API",
+    "docs": "Dokumentasyon",
+    "faq": "FAQ",
+    "dashboard": "Dashboard",
+    "history": "Kasaysayan",
+    "apiKeys": "Mga Susi ng API",
+    "billing": "Pagsingil",
+    "settings": "Mga Setting"
+  },
+  "hero": {
+    "title": "All-in-One AI Suite, 70% Mas Mura Kaysa sa OpenAI",
+    "subtitle": "Chat, Imagen, Video, Pagbuo ng code sa isang lugar. Magbayad kada token, walang subscription, walang kinakailangang credit card.",
+    "badge1": "Universal na Token",
+    "badge2": "Instant na Pagbuo",
+    "badge3": "Privacy Muna",
+    "cta": "Magsimulang Bumuo nang Libre",
+    "trustText": "Pinagkakatiwalaan ng 12,000+ creator at developer sa buong mundo"
+  },
+  "tools": {
+    "chat": "AI Chat",
+    "image": "AI Imagen",
+    "video": "AI Video",
+    "code": "AI Code",
+    "chatDesc": "Multi-turn na pag-uusap gamit ang AI",
+    "imageDesc": "Bumuo ng magagandang imahe mula sa teksto",
+    "videoDesc": "Gumawa ng video mula sa teksto o imahe",
+    "codeDesc": "Bumuo ng code mula sa natural na wika"
+  },
+  "pricing": {
+    "title": "Simpleng Presyo ng Token, Walang Nakatagong Bayarin",
+    "oneTime": "One-time na Pagbili",
+    "subscription": "Buwanang Subscription",
+    "free": "Libre",
+    "starter": "Starter",
+    "pro": "Pro",
+    "developer": "Developer",
+    "popular": "Pinakasikat",
+    "buyNow": "Bumili Na",
+    "subscribe": "Mag-subscribe",
+    "getApiKey": "Kumuha ng Susi ng API",
+    "signUpFree": "Mag-sign Up nang Libre",
+    "note": "Lahat ng token ay gumagana sa lahat ng tampok. Walang auto-renew para sa one-time na package."
+  },
+  "auth": {
+    "loginTitle": "Mag-sign In",
+    "registerTitle": "Gumawa ng Account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Kumpirmahin ang Password",
+    "forgotPassword": "Nakalimutan ang password?",
+    "rememberMe": "Tandaan ako",
+    "noAccount": "Wala pang account?",
+    "hasAccount": "Mayroon nang account?",
+    "signUpNow": "Mag-sign up",
+    "signInNow": "Mag-sign in",
+    "verifyEmail": "I-verify ang Email",
+    "sendCode": "Magpadala ng Code",
+    "resetPassword": "I-reset ang Password"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "tokenBalance": "Balanse ng Token",
+    "totalConsumed": "Kabuuang Nagamit",
+    "totalRecharged": "Kabuuang Na-recharge",
+    "consumptionTrend": "Trend ng Konsumo",
+    "featureUsage": "Paggamit ng Tampok"
+  },
+  "errors": {
+    "tokenInsufficient": "Hindi sapat ang balanse ng token. Mangyaring mag-recharge.",
+    "rateLimited": "Masyadong maraming kahilingan. Mangyaring subukang muli mamaya.",
+    "loginRequired": "Mangyaring mag-sign in upang magpatuloy.",
+    "tempEmailBlocked": "Hindi pinapayagan ang pansamantalang email address."
+  },
+  "footer": {
+    "product": "Produkto",
+    "resources": "Mga Mapagkukunan",
+    "legal": "Legal",
+    "company": "Kumpanya",
+    "privacyPolicy": "Patakaran sa Privacy",
+    "termsOfService": "Mga Tuntunin ng Serbisyo",
+    "refundPolicy": "Patakaran sa Refund",
+    "copyright": "© 2024 TokenFusion AI. Nakalaan ang lahat ng karapatan."
+  }
+}

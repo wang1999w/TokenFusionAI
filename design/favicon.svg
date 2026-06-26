@@ -1,0 +1,18 @@
+<svg width="64" height="64" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Favicon 简化版 - 仅保留中心圆点图形，适配小尺寸 -->
+  <defs>
+    <linearGradient id="faviconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 简化融合环 -->
+  <path d="M 128 48 C 80 48, 48 96, 48 128 C 48 160, 80 208, 128 208" 
+        stroke="url(#faviconGradient)" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <path d="M 128 48 C 176 48, 208 96, 208 128 C 208 160, 176 208, 128 208" 
+        stroke="url(#faviconGradient)" stroke-width="16" stroke-linecap="round" fill="none"/>
+  
+  <!-- 中心 Token 圆点 -->
+  <circle cx="128" cy="128" r="24" fill="url(#faviconGradient)"/>
+</svg>

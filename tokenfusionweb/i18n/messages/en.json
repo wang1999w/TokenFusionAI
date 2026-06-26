@@ -1,0 +1,110 @@
+{
+  "common": {
+    "appName": "TokenFusion AI",
+    "slogan": "One Token, Unlimited AI",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "getFreeTokens": "Get Free Tokens",
+    "viewPricing": "View Pricing",
+    "loading": "Loading...",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "download": "Download",
+    "share": "Share",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "back": "Back",
+    "next": "Next",
+    "retry": "Retry"
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "api": "API",
+    "docs": "Docs",
+    "faq": "FAQ",
+    "dashboard": "Dashboard",
+    "history": "History",
+    "apiKeys": "API Keys",
+    "billing": "Billing",
+    "settings": "Settings"
+  },
+  "hero": {
+    "title": "All-in-One AI Suite, 70% Cheaper Than OpenAI",
+    "subtitle": "Chat, Image, Video, Code generation in one place. Pay per token, no subscription, no credit card required.",
+    "badge1": "Universal Token",
+    "badge2": "Instant Generation",
+    "badge3": "Privacy First",
+    "cta": "Start Generating Free",
+    "trustText": "Trusted by 12,000+ creators & developers worldwide"
+  },
+  "tools": {
+    "chat": "AI Chat",
+    "image": "AI Image",
+    "video": "AI Video",
+    "code": "AI Code",
+    "chatDesc": "Multi-turn conversations with AI",
+    "imageDesc": "Generate stunning images from text",
+    "videoDesc": "Create videos from text or images",
+    "codeDesc": "Generate code from natural language"
+  },
+  "pricing": {
+    "title": "Simple Token Pricing, No Hidden Fees",
+    "oneTime": "One-time Purchase",
+    "subscription": "Monthly Subscription",
+    "free": "Free",
+    "starter": "Starter",
+    "pro": "Pro",
+    "developer": "Developer",
+    "popular": "Most Popular",
+    "buyNow": "Buy Now",
+    "subscribe": "Subscribe",
+    "getApiKey": "Get API Key",
+    "signUpFree": "Sign Up Free",
+    "note": "All tokens work across all features. No auto-renew for one-time packs."
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "registerTitle": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUpNow": "Sign up",
+    "signInNow": "Sign in",
+    "verifyEmail": "Verify Email",
+    "sendCode": "Send Code",
+    "resetPassword": "Reset Password"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "tokenBalance": "Token Balance",
+    "totalConsumed": "Total Consumed",
+    "totalRecharged": "Total Recharged",
+    "consumptionTrend": "Consumption Trend",
+    "featureUsage": "Feature Usage"
+  },
+  "errors": {
+    "tokenInsufficient": "Insufficient token balance. Please recharge.",
+    "rateLimited": "Too many requests. Please try again later.",
+    "loginRequired": "Please sign in to continue.",
+    "tempEmailBlocked": "Temporary email addresses are not allowed."
+  },
+  "footer": {
+    "product": "Product",
+    "resources": "Resources",
+    "legal": "Legal",
+    "company": "Company",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "refundPolicy": "Refund Policy",
+    "copyright": "© 2024 TokenFusion AI. All rights reserved."
+  }
+}

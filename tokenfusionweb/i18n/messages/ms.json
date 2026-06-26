@@ -1,0 +1,110 @@
+{
+  "common": {
+    "appName": "TokenFusion AI",
+    "slogan": "Satu Token, AI Tanpa Had",
+    "getStarted": "Mula",
+    "learnMore": "Ketahui Lebih Lanjut",
+    "signIn": "Log Masuk",
+    "signUp": "Daftar",
+    "getFreeTokens": "Dapatkan Token Percuma",
+    "viewPricing": "Lihat Harga",
+    "loading": "Memuatkan...",
+    "copy": "Salin",
+    "copied": "Disalin!",
+    "download": "Muat turun",
+    "share": "Kongsi",
+    "delete": "Padam",
+    "cancel": "Batal",
+    "confirm": "Sahkan",
+    "save": "Simpan",
+    "back": "Kembali",
+    "next": "Seterusnya",
+    "retry": "Cuba lagi"
+  },
+  "nav": {
+    "features": "Ciri",
+    "pricing": "Harga",
+    "api": "API",
+    "docs": "Dokumentasi",
+    "faq": "Soalan Lazim",
+    "dashboard": "Papan Pemuka",
+    "history": "Sejarah",
+    "apiKeys": "Kunci API",
+    "billing": "Pembilan",
+    "settings": "Tetapan"
+  },
+  "hero": {
+    "title": "Suite AI Serba Satu, 70% Lebih Murah Daripada OpenAI",
+    "subtitle": "Sembang, Imej, Video, Penjanaan kod dalam satu tempat. Bayar setiap token, tiada langganan, tiada kad kredit diperlukan.",
+    "badge1": "Token Universal",
+    "badge2": "Penjanaan Segera",
+    "badge3": "Privasi Diutamakan",
+    "cta": "Mula Menjana Percuma",
+    "trustText": "Dipercayai oleh 12,000+ kreator dan pembangun di seluruh dunia"
+  },
+  "tools": {
+    "chat": "AI Sembang",
+    "image": "AI Imej",
+    "video": "AI Video",
+    "code": "AI Kod",
+    "chatDesc": "Perbualan pelbagai pusingan dengan AI",
+    "imageDesc": "Jana imej menakjubkan daripada teks",
+    "videoDesc": "Cipta video daripada teks atau imej",
+    "codeDesc": "Jana kod daripada bahasa semula jadi"
+  },
+  "pricing": {
+    "title": "Harga Token Ringkas, Tiada Yuran Tersembunyi",
+    "oneTime": "Pembelian Sekali",
+    "subscription": "Langganan Bulanan",
+    "free": "Percuma",
+    "starter": "Pemula",
+    "pro": "Pro",
+    "developer": "Pembangun",
+    "popular": "Paling Popular",
+    "buyNow": "Beli Sekarang",
+    "subscribe": "Langgan",
+    "getApiKey": "Dapatkan Kunci API",
+    "signUpFree": "Daftar Percuma",
+    "note": "Semua token berfungsi untuk semua ciri. Pakej sekali bayar tanpa pembaharuan automatik."
+  },
+  "auth": {
+    "loginTitle": "Log Masuk",
+    "registerTitle": "Cipta Akaun",
+    "email": "E-mel",
+    "password": "Kata Laluan",
+    "confirmPassword": "Sahkan Kata Laluan",
+    "forgotPassword": "Lupa kata laluan?",
+    "rememberMe": "Ingat saya",
+    "noAccount": "Belum ada akaun?",
+    "hasAccount": "Sudah ada akaun?",
+    "signUpNow": "Daftar",
+    "signInNow": "Log masuk",
+    "verifyEmail": "Sahkan E-mel",
+    "sendCode": "Hantar Kod",
+    "resetPassword": "Set Semula Kata Laluan"
+  },
+  "dashboard": {
+    "title": "Papan Pemuka",
+    "tokenBalance": "Baki Token",
+    "totalConsumed": "Jumlah Digunakan",
+    "totalRecharged": "Jumlah Dimuatkan",
+    "consumptionTrend": "Trend Penggunaan",
+    "featureUsage": "Penggunaan Ciri"
+  },
+  "errors": {
+    "tokenInsufficient": "Baki token tidak mencukupi. Sila tambah nilai.",
+    "rateLimited": "Terlalu banyak permintaan. Sila cuba lagi nanti.",
+    "loginRequired": "Sila log masuk untuk meneruskan.",
+    "tempEmailBlocked": "Alamat e-mel sementara tidak dibenarkan."
+  },
+  "footer": {
+    "product": "Produk",
+    "resources": "Sumber",
+    "legal": "Undang-undang",
+    "company": "Syarikat",
+    "privacyPolicy": "Polisi Privasi",
+    "termsOfService": "Terma Perkhidmatan",
+    "refundPolicy": "Polisi Bayaran Balik",
+    "copyright": "© 2024 TokenFusion AI. Hak cipta terpelihara."
+  }
+}

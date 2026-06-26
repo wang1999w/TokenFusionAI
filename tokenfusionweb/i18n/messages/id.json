@@ -1,0 +1,110 @@
+{
+  "common": {
+    "appName": "TokenFusion AI",
+    "slogan": "Satu Token, AI Tanpa Batas",
+    "getStarted": "Mulai",
+    "learnMore": "Pelajari Selengkapnya",
+    "signIn": "Masuk",
+    "signUp": "Daftar",
+    "getFreeTokens": "Dapatkan Token Gratis",
+    "viewPricing": "Lihat Harga",
+    "loading": "Memuat...",
+    "copy": "Salin",
+    "copied": "Disalin!",
+    "download": "Unduh",
+    "share": "Bagikan",
+    "delete": "Hapus",
+    "cancel": "Batal",
+    "confirm": "Konfirmasi",
+    "save": "Simpan",
+    "back": "Kembali",
+    "next": "Berikutnya",
+    "retry": "Coba lagi"
+  },
+  "nav": {
+    "features": "Fitur",
+    "pricing": "Harga",
+    "api": "API",
+    "docs": "Dokumentasi",
+    "faq": "FAQ",
+    "dashboard": "Dasbor",
+    "history": "Riwayat",
+    "apiKeys": "Kunci API",
+    "billing": "Tagihan",
+    "settings": "Pengaturan"
+  },
+  "hero": {
+    "title": "Suite AI Serbaguna, 70% Lebih Murah dari OpenAI",
+    "subtitle": "Obrolan, Gambar, Video, Pembuatan kode dalam satu tempat. Bayar per token, tanpa berlangganan, tanpa kartu kredit.",
+    "badge1": "Token Universal",
+    "badge2": "Hasil Instan",
+    "badge3": "Privasi Utama",
+    "cta": "Mulai Buat Gratis",
+    "trustText": "Dipercaya oleh 12.000+ kreator dan pengembang di seluruh dunia"
+  },
+  "tools": {
+    "chat": "AI Obrolan",
+    "image": "AI Gambar",
+    "video": "AI Video",
+    "code": "AI Kode",
+    "chatDesc": "Obrolan multi-putaran dengan AI",
+    "imageDesc": "Buat gambar menakjubkan dari teks",
+    "videoDesc": "Buat video dari teks atau gambar",
+    "codeDesc": "Buat kode dari bahasa alami"
+  },
+  "pricing": {
+    "title": "Harga Token Sederhana, Tanpa Biaya Tersembunyi",
+    "oneTime": "Pembelian Sekali",
+    "subscription": "Langganan Bulanan",
+    "free": "Gratis",
+    "starter": "Pemula",
+    "pro": "Pro",
+    "developer": "Pengembang",
+    "popular": "Paling Populer",
+    "buyNow": "Beli Sekarang",
+    "subscribe": "Berlangganan",
+    "getApiKey": "Dapatkan Kunci API",
+    "signUpFree": "Daftar Gratis",
+    "note": "Semua token berlaku untuk semua fitur. Paket sekali bayar tanpa perpanjangan otomatis."
+  },
+  "auth": {
+    "loginTitle": "Masuk",
+    "registerTitle": "Buat Akun",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "confirmPassword": "Konfirmasi Kata Sandi",
+    "forgotPassword": "Lupa kata sandi?",
+    "rememberMe": "Ingat saya",
+    "noAccount": "Belum punya akun?",
+    "hasAccount": "Sudah punya akun?",
+    "signUpNow": "Daftar",
+    "signInNow": "Masuk",
+    "verifyEmail": "Verifikasi Email",
+    "sendCode": "Kirim Kode",
+    "resetPassword": "Reset Kata Sandi"
+  },
+  "dashboard": {
+    "title": "Dasbor",
+    "tokenBalance": "Saldo Token",
+    "totalConsumed": "Total Digunakan",
+    "totalRecharged": "Total Diisi",
+    "consumptionTrend": "Tren Konsumsi",
+    "featureUsage": "Penggunaan Fitur"
+  },
+  "errors": {
+    "tokenInsufficient": "Saldo token tidak cukup. Silakan isi ulang.",
+    "rateLimited": "Terlalu banyak permintaan. Silakan coba lagi nanti.",
+    "loginRequired": "Silakan masuk untuk melanjutkan.",
+    "tempEmailBlocked": "Alamat email sementara tidak diperbolehkan."
+  },
+  "footer": {
+    "product": "Produk",
+    "resources": "Sumber Daya",
+    "legal": "Hukum",
+    "company": "Perusahaan",
+    "privacyPolicy": "Kebijakan Privasi",
+    "termsOfService": "Ketentuan Layanan",
+    "refundPolicy": "Kebijakan Pengembalian Dana",
+    "copyright": "© 2024 TokenFusion AI. Hak cipta dilindungi."
+  }
+}
