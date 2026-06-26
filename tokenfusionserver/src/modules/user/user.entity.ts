@@ -9,8 +9,8 @@ import {
   OneToOne,
   OneToMany,
 } from 'typeorm';
-import { TokenAccount } from '../../billing/entities/token-account.entity';
-import { RefreshToken } from '../../auth/entities/refresh-token.entity';
+import { TokenAccount } from '../billing/entities/token-account.entity';
+import { RefreshToken } from '../auth/entities/refresh-token.entity';
 
 /**
  * 用户角色枚举
@@ -39,59 +39,59 @@ export enum UserStatus {
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: number;
+  id!: number;
 
   @Column({ type: 'uuid', unique: true, default: () => 'gen_random_uuid()' })
-  uuid: string;
+  uuid!: string;
 
   @Index()
   @Column({ type: 'varchar', length: 255, unique: true })
-  email: string;
+  email!: string;
 
   @Column({ name: 'password_hash', type: 'varchar', length: 255, select: false })
-  passwordHash: string;
+  passwordHash!: string;
 
   @Column({ name: 'email_verified', type: 'boolean', default: false })
-  emailVerified: boolean;
+  emailVerified!: boolean;
 
   @Column({ type: 'smallint', default: UserStatus.ACTIVE })
-  status: UserStatus;
+  status!: UserStatus;
 
   @Column({ type: 'varchar', length: 32, default: UserRole.USER })
-  role: UserRole;
+  role!: UserRole;
 
   @Column({ name: 'nickname', type: 'varchar', length: 64, nullable: true })
-  nickname: string | null;
+  nickname!: string | null;
 
   @Column({ name: 'avatar_url', type: 'varchar', length: 512, nullable: true })
-  avatarUrl: string | null;
+  avatarUrl!: string | null;
 
   @Index()
   @Column({ name: 'invite_code', type: 'varchar', length: 16, unique: true })
-  inviteCode: string;
+  inviteCode!: string;
 
   @Column({ name: 'inviter_id', type: 'bigint', nullable: true })
-  inviterId: number | null;
+  inviterId!: number | null;
 
   @Column({ name: 'last_login_at', type: 'timestamptz', nullable: true })
-  lastLoginAt: Date | null;
+  lastLoginAt!: Date | null;
 
   @Column({ name: 'last_login_ip', type: 'inet', nullable: true })
-  lastLoginIp: string | null;
+  lastLoginIp!: string | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
-  deletedAt: Date | null;
+  deletedAt!: Date | null;
 
   // 关联关系
   @OneToOne(() => TokenAccount, (account) => account.user)
-  tokenAccount: TokenAccount;
+  tokenAccount!: TokenAccount;
 
   @OneToMany(() => RefreshToken, (token) => token.user)
-  refreshTokens: RefreshToken[];
+  refreshTokens!: RefreshToken[];
 }

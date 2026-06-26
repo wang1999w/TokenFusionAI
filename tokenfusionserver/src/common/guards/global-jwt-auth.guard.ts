@@ -44,13 +44,19 @@ export class GlobalJwtAuthGuard extends AuthGuard('jwt') {
   /**
    * handleRequest - 统一处理鉴权错误
    */
-  handleRequest(err: unknown, user: unknown) {
+  handleRequest<TUser = Express.User>(
+    err: unknown,
+    user: TUser | false,
+    info: unknown,
+    context: ExecutionContext,
+    status?: unknown,
+  ): TUser {
     if (err || !user) {
       throw new UnauthorizedException({
         code: ErrorCodes.UNAUTHORIZED,
         message: '请先登录',
       });
     }
-    return user as Express.User;
+    return user as TUser;
   }
 }

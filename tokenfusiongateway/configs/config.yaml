@@ -11,3 +11,28 @@ redis:
 log:
   level: debug
   format: console
+
+# 后端业务服务配置（网关调用后端的鉴权/计费等内部接口）
+backend:
+  url: http://localhost:3000            # 后端服务基础地址（可用环境变量 BACKEND_URL 覆盖）
+  internal_key: tokenfusion_internal_key # 内部调用密钥，放在 X-Internal-Key 请求头中
+  jwt_secret: tokenfusion_jwt_secret     # JWT 签名密钥，用于本地解码 access_token
+  jwt_issuer: tokenfusion                 # JWT 签发方（可选校验）
+  timeout: 10                             # 调用后端 HTTP 超时时间（秒）
+
+# Phase 6 安全加固配置（可用环境变量覆盖，如 SIGNATURE_SECRET）
+security:
+  # 签名校验：HMAC-SHA256 密钥，为空时关闭签名校验（开发环境）；生产环境务必配置
+  signature_secret: ""                   # 可用环境变量 SIGNATURE_SECRET 覆盖
+  signature_ttl: 300                      # 签名时间戳有效期（秒），默认 300（5 分钟）
+
+  # 三级限流参数（0 或缺省表示使用代码默认值：用户 120/分、IP 300/分、全局 200/秒）
+  rate_user_per_minute: 0
+  rate_ip_per_minute: 0
+  rate_global_per_second: 0
+
+  # 熔断参数（0 或缺省表示使用代码默认值：日封顶 10 万、小时突增 2 万、熔断 5 分钟）
+  circuit_device_daily_cap: 0
+  circuit_device_hourly_surge: 0
+  circuit_open_ttl: 0
+

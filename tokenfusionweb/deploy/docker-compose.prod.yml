@@ -1,0 +1,261 @@
+# ============================================================
+# TokenFusion AI 生产环境 Docker Compose 编排
+# ============================================================
+#
+# 架构说明：
+# - postgres-primary / postgres-replica：PostgreSQL 主从复制（高可用 + 读写分离）
+# - redis：缓存与会话存储（带持久化）
+# - backend-api：业务后端服务（Node.js）
+# - gateway：AI 网关服务（统一调度多模型）
+# - web：Next.js 前端应用（SSR + 静态导出）
+# - nginx：反向代理，统一入口（SSL + gzip + 静态文件）
+#
+# 使用方式：
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# 注意：
+# - 所有敏感配置通过 .env.prod 环境变量注入，不硬编码；
+# - 数据卷持久化数据库、Redis、上传文件等数据；
+# - 服务间通过内部网络 tokenfusion-net 通信，仅 nginx 暴露端口。
+# ============================================================
+
+version: '3.9'
+
+services:
+  # ------------------------------------------------------------
+  # PostgreSQL 主库（读写）
+  # ------------------------------------------------------------
+  postgres-primary:
+    image: postgres:16-alpine
+    container_name: tf-postgres-primary
+    restart: always
+    environment:
+      # 数据库初始化配置（来自 .env.prod）
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      # 开启主从复制所需的配置
+      POSTGRES_REPLICATION_USER: ${POSTGRES_REPLICATION_USER}
+      POSTGRES_REPLICATION_PASSWORD: ${POSTGRES_REPLICATION_PASSWORD}
+    volumes:
+      # 主库数据持久化
+      - postgres-primary-data:/var/lib/postgresql/data
+      # 初始化脚本（创建复制用户）
+      - ./postgres/init-primary.sh:/docker-entrypoint-initdb.d/init-primary.sh:ro
+    # 主从复制需要自定义配置
+    command: >
+      postgres
+      -c wal_level=replica
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c hot_standby=on
+    networks:
+      - tokenfusion-net
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ------------------------------------------------------------
+  # PostgreSQL 从库（只读副本）
+  # ------------------------------------------------------------
+  postgres-replica:
+    image: postgres:16-alpine
+    container_name: tf-postgres-replica
+    restart: always
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    environment:
+      # 从库使用只读用户
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # 主库连接信息（用于流复制）
+      PRIMARY_HOST: postgres-primary
+      PRIMARY_REPLICATION_USER: ${POSTGRES_REPLICATION_USER}
+      PRIMARY_REPLICATION_PASSWORD: ${POSTGRES_REPLICATION_PASSWORD}
+    volumes:
+      - postgres-replica-data:/var/lib/postgresql/data
+      - ./postgres/init-replica.sh:/docker-entrypoint-initdb.d/init-replica.sh:ro
+    command: >
+      postgres
+      -c hot_standby=on
+      -c hot_standby_feedback=on
+    networks:
+      - tokenfusion-net
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ------------------------------------------------------------
+  # Redis 缓存（会话 / 限流 / 队列）
+  # ------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: tf-redis
+    restart: always
+    # 开启持久化 + 设置密码 + 限制最大内存
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+    volumes:
+      # Redis 数据持久化
+      - redis-data:/data
+    networks:
+      - tokenfusion-net
+    healthcheck:
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ------------------------------------------------------------
+  # 业务后端 API 服务
+  # ------------------------------------------------------------
+  backend-api:
+    image: ${REGISTRY}/tokenfusion-backend:${TAG:-latest}
+    container_name: tf-backend-api
+    restart: always
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # 数据库连接（主库写）
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-primary:5432/${POSTGRES_DB}
+      # 只读副本（读请求路由）
+      DATABASE_REPLICA_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-replica:5432/${POSTGRES_DB}
+      # Redis 连接
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      # JWT 密钥
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      # 网关地址（内部通信）
+      GATEWAY_INTERNAL_URL: http://gateway:3001
+      # 运行环境
+      NODE_ENV: production
+      PORT: 3000
+    volumes:
+      # 上传文件持久化
+      - uploads-data:/app/uploads
+    networks:
+      - tokenfusion-net
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ------------------------------------------------------------
+  # AI 网关服务（统一调度多模型提供商）
+  # ------------------------------------------------------------
+  gateway:
+    image: ${REGISTRY}/tokenfusion-gateway:${TAG:-latest}
+    container_name: tf-gateway
+    restart: always
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      # Redis 连接（限流 / 缓存）
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      # 各模型提供商 API Key（来自 .env.prod）
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      # 业务后端地址（令牌校验 / 扣费回调）
+      BACKEND_INTERNAL_URL: http://backend-api:3000
+      # 共享 JWT 密钥（用于校验用户令牌）
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: production
+      PORT: 3001
+    networks:
+      - tokenfusion-net
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3001/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ------------------------------------------------------------
+  # Next.js 前端应用
+  # ------------------------------------------------------------
+  web:
+    image: ${REGISTRY}/tokenfusion-web:${TAG:-latest}
+    container_name: tf-web
+    restart: always
+    depends_on:
+      backend-api:
+        condition: service_healthy
+    environment:
+      # 前端通过内部网络访问后端与网关（SSR 数据请求）
+      NEXT_PUBLIC_API_BASE_URL: http://backend-api:3000/api/v1
+      NEXT_PUBLIC_GATEWAY_BASE_URL: /gateway
+      # 服务端渲染时使用的内部地址
+      API_INTERNAL_URL: http://backend-api:3000/api/v1
+      GATEWAY_INTERNAL_URL: http://gateway:3001
+      NODE_ENV: production
+      PORT: 3002
+    networks:
+      - tokenfusion-net
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3002/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ------------------------------------------------------------
+  # Nginx 反向代理（统一入口）
+  # ------------------------------------------------------------
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: tf-nginx
+    restart: always
+    depends_on:
+      web:
+        condition: service_healthy
+      backend-api:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    ports:
+      # 对外暴露 80（HTTP，重定向到 HTTPS）与 443（HTTPS）
+      - '80:80'
+      - '443:443'
+    volumes:
+      # Nginx 配置文件
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # SSL 证书
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      # 前端静态资源（由 web 容器构建产物拷贝，或通过 volume 共享）
+      - static-assets:/usr/share/nginx/html:ro
+    networks:
+      - tokenfusion-net
+
+# ============================================================
+# 数据卷（持久化）
+# ============================================================
+volumes:
+  postgres-primary-data:    # 主库数据
+  postgres-replica-data:    # 从库数据
+  redis-data:               # Redis 数据
+  uploads-data:             # 用户上传文件
+  static-assets:            # 前端静态资源
+
+# ============================================================
+# 内部网络（服务间隔离通信）
+# ============================================================
+networks:
+  tokenfusion-net:
+    driver: bridge

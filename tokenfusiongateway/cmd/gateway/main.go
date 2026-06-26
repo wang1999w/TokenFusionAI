@@ -13,13 +13,17 @@ import (
 	"go.uber.org/zap"
 
 	"tokenfusiongateway/internal/config"
+	"tokenfusiongateway/internal/handler"
 	"tokenfusiongateway/internal/middleware"
+	"tokenfusiongateway/internal/provider"
+	"tokenfusiongateway/internal/service"
 	"tokenfusiongateway/pkg/logger"
 	gwredis "tokenfusiongateway/pkg/redis"
 )
 
 func main() {
 	// 加载配置文件 configs/config.yaml
+	// 配置可通过环境变量覆盖（如 BACKEND_URL / JWT_SECRET 等）
 	cfg, err := config.Load("configs/config.yaml")
 	if err != nil {
 		fmt.Printf("failed to load config: %v\n", err)
@@ -36,9 +40,10 @@ func main() {
 	logger.Info("配置加载完成",
 		zap.String("mode", cfg.Server.RunMode),
 		zap.Int("port", cfg.Server.Port),
+		zap.String("backend_url", cfg.Backend.URL),
 	)
 
-	// 初始化 Redis 客户端（用于风控、计费、缓存）
+	// 初始化 Redis 客户端（用于风控、计费缓存、审计日志、视频任务存储）
 	redisClient := gwredis.New(&cfg.Redis)
 	defer redisClient.Close()
 	logger.Info("Redis 客户端初始化完成",
@@ -46,6 +51,29 @@ func main() {
 		zap.Int("port", cfg.Redis.Port),
 		zap.Int("db", cfg.Redis.DB),
 	)
+
+	// ==================== 服务装配 ====================
+
+	// 创建厂商注册表（Phase 5 将注册具体的 AI 厂商实现）
+	registry := provider.NewRegistry()
+
+	// 创建厂商调度服务，并启动后台健康检查
+	dispatch := service.NewDispatchService(registry)
+	healthCtx, healthCancel := context.WithCancel(context.Background())
+	defer healthCancel()
+	go dispatch.StartHealthCheck(healthCtx, 30*time.Second)
+
+	// 创建核心业务服务
+	authSvc := service.NewAuthService(cfg, redisClient)       // 鉴权服务（JWT 本地解码 + 后端校验）
+	riskSvc := service.NewRiskService(redisClient)            // 风控服务（黑名单/额度/限流）
+	billingSvc := service.NewBillingService(cfg)              // 计费服务（预扣/结算/回补）
+	auditSvc := service.NewAuditService(redisClient)          // 审计日志服务
+
+	logger.Info("核心服务装配完成",
+		zap.Strings("providers", registry.Names()),
+	)
+
+	// ==================== HTTP 服务 ====================
 
 	// 设置 Gin 运行模式（debug/release/test）
 	gin.SetMode(cfg.Server.RunMode)
@@ -59,8 +87,16 @@ func main() {
 	r.Use(middleware.CORS())      // 跨域处理
 	r.Use(middleware.RequestID()) // 请求唯一ID生成
 
-	// 注册路由
-	r.GET("/health", healthHandler) // 健康检查端点
+	// 注册所有网关业务路由（含健康检查）
+	handler.Setup(r, &handler.Deps{
+		Cfg:      cfg,
+		Redis:    redisClient,
+		Auth:     authSvc,
+		Risk:     riskSvc,
+		Billing:  billingSvc,
+		Dispatch: dispatch,
+		Audit:    auditSvc,
+	})
 
 	// 确定监听端口，默认 8080
 	port := cfg.Server.Port
@@ -89,6 +125,9 @@ func main() {
 
 	logger.Info("正在关闭网关服务...")
 
+	// 停止后台健康检查
+	healthCancel()
+
 	// 给予 5 秒超时时间处理剩余请求
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -97,9 +136,4 @@ func main() {
 	}
 
 	logger.Info("网关服务已退出")
-}
-
-// healthHandler 健康检查处理器，返回服务运行状态
-func healthHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }

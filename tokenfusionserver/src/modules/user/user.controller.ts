@@ -21,6 +21,9 @@ export class UserController {
   @Get('profile')
   async getProfile(@CurrentUser() user: JwtPayload) {
     const profile = await this.userService.findById(user.sub);
+    if (!profile) {
+      return { message: '用户不存在' };
+    }
     return {
       id: profile.id,
       uuid: profile.uuid,

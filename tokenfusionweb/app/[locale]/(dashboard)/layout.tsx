@@ -1,94 +1,117 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import {
-  LayoutDashboard,
-  History,
-  Key,
-  CreditCard,
-  Settings,
-} from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { Link, useRouter, usePathname } from '@/i18n/navigation';
+import { usePathname, useRouter, Link } from '@/i18n/navigation';
+import { useAuthStore } from '@/lib/store/authStore';
+import { cn } from '@/lib/utils/cn';
+import { Navbar } from '@/components/common/Navbar';
+import { Loader2 } from 'lucide-react';
 
 /**
- * 用户中心布局
- * 包含侧边栏导航和路由守卫
- * 未登录用户自动跳转到登录页，并记录来源页面
+ * DashboardLayout 用户控制台布局
+ *
+ * 职责：
+ * 1. 登录态校验：未登录用户跳转至登录页（控制台需登录访问）
+ * 2. 渲染顶部公共导航栏（复用 Navbar 组件）
+ * 3. 渲染控制台二级导航（控制台 / 历史记录 / API 密钥 / 账单）
+ * 4. 提供内容区容器
+ *
+ * 说明：
+ * - 与管理后台 (admin) 不同，控制台面向所有已登录用户；
+ * - 二级导航采用水平 Tab 风格，与顶部导航栏区分层级。
  */
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const t = useTranslations('nav');
-  const { isAuthenticated, loading } = useAuth();
-  const router = useRouter();
+  const tCommon = useTranslations('common');
   const pathname = usePathname();
-  const [checking, setChecking] = useState(true);
+  const router = useRouter();
+
+  // 从全局 store 获取登录态
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const restore = useAuthStore((s) => s.restore);
+
+  // 客户端挂载标志
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    restore();
+    setMounted(true);
+  }, [restore]);
 
   /**
-   * 路由守卫：检查登录状态
-   * 未登录则跳转登录页，并记录来源路径
+   * 登录态校验：
+   * - 挂载完成前展示 loading
+   * - 未登录跳转登录页
    */
   useEffect(() => {
-    if (!loading) {
-      if (!isAuthenticated) {
-        // 记录来源路径，登录后跳回
-        const redirect = encodeURIComponent(pathname);
-        router.replace(`/auth/login?redirect=${redirect}`);
-      }
-      setChecking(false);
+    if (!mounted) return;
+    if (!isAuthenticated) {
+      router.replace('/auth/login');
     }
-  }, [isAuthenticated, loading, router, pathname]);
+  }, [mounted, isAuthenticated, router]);
 
-  // 登录状态检查中，显示加载动画
-  if (checking || loading) {
+  // 挂载完成前 / 未登录，展示 loading
+  if (!mounted || !isAuthenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-background">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#06B6D4] border-t-transparent" />
+        <div className="flex flex-col items-center gap-3 text-text-secondary">
+          <Loader2 className="h-8 w-8 animate-spin text-brand-primary" />
+          <span className="text-sm">{tCommon('loading')}</span>
+        </div>
       </div>
     );
   }
 
-  // 未登录不渲染内容
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  // 侧边栏导航项配置
+  /** 控制台二级导航项 */
   const navItems = [
-    { label: t('dashboard'), href: '/dashboard' as const, icon: LayoutDashboard },
-    { label: t('history'), href: '/history' as const, icon: History },
-    { label: t('apiKeys'), href: '/api-keys' as const, icon: Key },
-    { label: t('billing'), href: '/billing' as const, icon: CreditCard },
-    { label: t('settings'), href: '/settings' as const, icon: Settings },
-  ];
+    { href: '/dashboard', label: t('dashboard') },
+    { href: '/dashboard/history', label: t('history') },
+    { href: '/dashboard/apikeys', label: t('apiKeys') },
+    { href: '/dashboard/billing', label: t('billing') },
+  ] as const;
+
+  /** 判断当前导航项是否激活 */
+  const isActive = (href: string): boolean =>
+    href === '/dashboard'
+      ? pathname === '/dashboard'
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <div className="flex min-h-screen bg-brand-background">
-      {/* 侧边栏导航 */}
-      <aside className="fixed inset-y-0 left-0 z-50 w-64 border-r border-white/10 bg-brand-card">
-        <nav className="flex h-full flex-col gap-1 p-4">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
+    <div className="min-h-screen bg-brand-background">
+      {/* 顶部公共导航栏 */}
+      <Navbar />
+
+      {/* 控制台二级导航 */}
+      <div className="border-b border-white/5 bg-brand-card/50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <nav className="flex gap-1 overflow-x-auto">
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-white"
+                className={cn(
+                  'whitespace-nowrap border-b-2 px-4 py-3 text-sm transition-colors',
+                  isActive(item.href)
+                    ? 'border-brand-primary text-white'
+                    : 'border-transparent text-text-secondary hover:text-white',
+                )}
               >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span>{item.label}</span>
+                {item.label}
               </Link>
-            );
-          })}
-        </nav>
-      </aside>
-      {/* 主内容区 */}
-      <main className="flex-1 pl-64">
-        <div className="p-8">{children}</div>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      {/* 页面内容容器 */}
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {children}
       </main>
     </div>
   );

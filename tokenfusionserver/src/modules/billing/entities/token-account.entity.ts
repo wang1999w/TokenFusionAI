@@ -16,39 +16,39 @@ import { User } from '../../user/user.entity';
 @Entity('token_accounts')
 export class TokenAccount {
   @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: number;
+  id!: number;
 
   @Column({ name: 'user_id', type: 'bigint', unique: true })
-  userId: number;
+  userId!: number;
 
   @OneToOne(() => User, (user) => user.tokenAccount)
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user!: User;
 
   /** 当前可用余额 */
   @Column({ type: 'bigint', default: 0 })
-  balance: number;
+  balance!: number;
 
   /** 预扣冻结额（请求进行中未结算的 Token） */
   @Column({ type: 'bigint', default: 0 })
-  frozen: number;
+  frozen!: number;
 
   /** 累计充值 Token 总量 */
   @Column({ name: 'total_recharged', type: 'bigint', default: 0 })
-  totalRecharged: number;
+  totalRecharged!: number;
 
   /** 累计消耗 Token 总量 */
   @Column({ name: 'total_consumed', type: 'bigint', default: 0 })
-  totalConsumed: number;
+  totalConsumed!: number;
 
   /** 累计获赠 Token 总量（注册赠额、邀请奖励等） */
   @Column({ name: 'total_gifted', type: 'bigint', default: 0 })
-  totalGifted: number;
+  totalGifted!: number;
 
   /** 乐观锁版本号，每次更新自动递增 */
   @Column({ type: 'integer', default: 0 })
-  version: number;
+  version!: number;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
-  updatedAt: Date;
+  updatedAt!: Date;
 }

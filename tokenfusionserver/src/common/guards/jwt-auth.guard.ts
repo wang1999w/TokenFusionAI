@@ -16,19 +16,22 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   /**
    * 重写handleRequest，统一错误返回格式
    */
-  handleRequest(err: unknown, user: unknown, info: unknown) {
+  handleRequest<TUser = Express.User>(
+    err: unknown,
+    user: TUser | false,
+    info: unknown,
+    context: ExecutionContext,
+    status?: unknown,
+  ): TUser {
     if (err || !user) {
       throw new UnauthorizedException({
         code: ErrorCodes.UNAUTHORIZED,
         message: '请先登录',
       });
     }
-    return user as Express.User;
+    return user as TUser;
   }
 
-  /**
-   * canActivate - 默认使用 Passport JWT 策略
-   */
   canActivate(context: ExecutionContext) {
     return super.canActivate(context);
   }

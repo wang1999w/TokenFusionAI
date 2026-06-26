@@ -14,27 +14,27 @@ import {
 @Entity('device_binds')
 export class DeviceBind {
   @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: number;
+  id!: number;
 
   @Index()
   @Column({ name: 'device_id', type: 'varchar', length: 128, unique: true })
-  deviceId: string;
+  deviceId!: string;
 
   @Column({ name: 'user_id', type: 'bigint', nullable: true })
-  userId: number | null;
+  userId!: number | null;
 
   @Column({ type: 'text', nullable: true })
-  fingerprint: string | null;
+  fingerprint!: string | null;
 
   @Column({ type: 'inet', nullable: true })
-  ip: string | null;
+  ip!: string | null;
 
   @Column({ name: 'user_agent', type: 'text', nullable: true })
-  userAgent: string | null;
+  userAgent!: string | null;
 
   @Column({ name: 'first_seen', type: 'timestamptz', default: () => 'NOW()' })
-  firstSeen: Date;
+  firstSeen!: Date;
 
   @UpdateDateColumn({ name: 'last_seen', type: 'timestamptz' })
-  lastSeen: Date;
+  lastSeen!: Date;
 }

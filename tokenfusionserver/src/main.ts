@@ -12,7 +12,8 @@ import { GlobalJwtAuthGuard } from './common/guards/global-jwt-auth.guard';
  */
 async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  // 开启 rawBody 选项，使支付 Webhook 可获取原始请求体用于签名校验（如 Stripe）
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   // 全局接口前缀
   app.setGlobalPrefix('api/v1');

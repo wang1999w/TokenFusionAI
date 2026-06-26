@@ -1,4 +1,4 @@
-import { UserRole, UserStatus } from '../../modules/user/user.entity';
+import { UserRole, UserStatus } from '../../user/user.entity';
 
 /**
  * JWT Payload 结构
